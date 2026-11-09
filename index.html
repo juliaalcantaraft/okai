@@ -62,6 +62,14 @@
           <input id="avalDestino" list="listaDestinos" autocomplete="off" placeholder="Ex.: Paraty" required>
           <label for="avalHotel">Hospedagem <span class="opcional">(opcional)</span></label>
           <input id="avalHotel" autocomplete="off">
+          <fieldset class="aval-nota aval-sozinha"><legend>Você viajou sozinha? <span class="opcional">(opcional)</span></legend>
+            <div class="aval-opcoes">
+              <label><input type="radio" name="sozinha" value="sim"> Sim</label>
+              <label><input type="radio" name="sozinha" value="nao"> Não</label>
+            </div>
+          </fieldset>
+          <label for="avalPerfil">Como você se identifica? <span class="opcional">(opcional, não aparece no site)</span></label>
+          <select id="avalPerfil"><option value="">Escolha</option><option value="mulher">Mulher</option><option value="homem">Homem</option><option value="outro">Outro</option><option value="nao_dizer">Prefiro não dizer</option></select>
           <fieldset class="aval-nota"><legend>Sua nota</legend>
             <div class="estrelas">
               <input type="radio" id="nota5" name="nota" value="5"><label for="nota5" aria-label="5 de 5">★</label>

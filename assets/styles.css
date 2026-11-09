@@ -334,3 +334,5 @@ select,textarea,.hoteis-ferramentas input,.hoteis-ferramentas select,.chat-form 
 .aval-origem{margin-top:12px!important;font-size:13px;color:#6F5645}
 .aval-publicar{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-weight:500;cursor:pointer;line-height:1.4}.aval-publicar input{flex:none;width:20px;height:20px;margin-top:2px;accent-color:var(--marrom)}
 #vistaModerar{padding-bottom:96px}#modEntrar{flex-direction:row;align-items:flex-end}#modEntrar[hidden]{display:none}
+.aval-opcoes{display:flex;gap:24px}.aval-opcoes label{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer}.aval-opcoes input{width:20px;height:20px;accent-color:var(--marrom)}
+#avalPerfil{min-height:44px}

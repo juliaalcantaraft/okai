@@ -51,7 +51,8 @@ function senhaCerta(req) {
 }
 
 function publica(x) {
-  return { id: x.id, cidade: x.cidade, hotel: x.hotel, nota: x.nota, texto: x.texto, classe: x.classe, temas: x.temas, mes: x.criada.slice(0, 7) };
+  // O perfil (identidade) não é publicado: serve só para contagem na moderação.
+  return { id: x.id, cidade: x.cidade, hotel: x.hotel, nota: x.nota, texto: x.texto, sozinha: x.sozinha === 'sim', classe: x.classe, temas: x.temas, mes: x.criada.slice(0, 7) };
 }
 
 module.exports = { comandos, lerCorpo, semDadosPessoais, senhaCerta, publica, credenciais };

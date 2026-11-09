@@ -481,7 +481,7 @@
     fetch('api/avaliacoes?cidade=' + encodeURIComponent(id)).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
       if (!j.avaliacoes || !j.avaliacoes.length || !$('blocoReais')) return;
       alvo.innerHTML = '<h3>Relatos de viajantes <span class="selo selo-real">Real</span></h3><p class="nota">Enviados por visitantes e revisados pela equipe antes de aparecer.</p>' + j.avaliacoes.map(function (x) {
-        return '<article class="relato"><div class="relato-meta"><span class="relato-hotel">' + esc(x.hotel || 'Hospedagem não informada') + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="relato-meta"><span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span>' + (x.temas.length ? '<span>Temas: ' + esc(x.temas.join(', ')) + '</span>' : '') + '<span>' + esc(x.mes.split('-').reverse().join('/')) + '</span></div></article>';
+        return '<article class="relato"><div class="relato-meta"><span class="relato-hotel">' + esc(x.hotel || 'Hospedagem não informada') + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="relato-meta">' + (x.sozinha ? '<span class="selo selo-sua">Viajou sozinha</span>' : '') + '<span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span>' + (x.temas.length ? '<span>Temas: ' + esc(x.temas.join(', ')) + '</span>' : '') + '<span>' + esc(x.mes.split('-').reverse().join('/')) + '</span></div></article>';
       }).join('');
       alvo.hidden = false;
     }).catch(function () { });
@@ -498,10 +498,14 @@
       pedir('GET').then(function (j) {
         $('modEntrar').hidden = true;
         $('modAviso').textContent = j.pendentes.length ? j.pendentes.length + ' avaliação(ões) esperando revisão.' : 'Nenhuma avaliação pendente.';
-        $('modLista').innerHTML = j.pendentes.map(function (x) {
+        var PERFIL = { mulher: 'Mulher', homem: 'Homem', outro: 'Outro', nao_dizer: 'Prefere não dizer' };
+        function cartaoMod(x, botoes) {
           var c = D.porId[x.cidade];
-          return '<article class="cartao relato" data-id="' + esc(x.id) + '" style="margin-bottom:12px"><div class="relato-meta"><span class="relato-hotel">' + esc(c ? nomeCidade(c) : x.cidade) + (x.hotel ? ' · ' + esc(x.hotel) : '') + '</span><span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="perfil-links"><button class="botao" type="button" data-acao="aprovar">Aprovar</button><button class="botao botao-claro" type="button" data-acao="recusar">Recusar</button></div></article>';
-        }).join('');
+          return '<article class="cartao relato" data-id="' + esc(x.id) + '" style="margin-bottom:12px"><div class="relato-meta"><span class="relato-hotel">' + esc(c ? nomeCidade(c) : x.cidade) + (x.hotel ? ' · ' + esc(x.hotel) : '') + '</span><span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span><span>Sozinha: ' + (x.sozinha === 'sim' ? 'sim' : x.sozinha === 'nao' ? 'não' : 'não respondeu') + '</span><span>Perfil: ' + esc(PERFIL[x.perfil] || 'não respondeu') + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="perfil-links">' + botoes + '</div></article>';
+        }
+        var resumo = j.resumo ? '<p class="nota" style="margin:8px 0 16px">Publicadas: ' + j.resumo.aprovadas + ' · De mulheres que viajaram sozinhas: ' + j.resumo.mulheres_sozinhas + '</p>' : '';
+        $('modLista').innerHTML = j.pendentes.map(function (x) { return cartaoMod(x, '<button class="botao" type="button" data-acao="aprovar">Aprovar</button><button class="botao botao-claro" type="button" data-acao="recusar">Recusar</button>'); }).join('') +
+          '<h3 style="margin:32px 0 4px">Já publicadas</h3>' + resumo + ((j.aprovadas || []).length ? j.aprovadas.map(function (x) { return cartaoMod(x, '<button class="botao botao-claro" type="button" data-acao="remover">Remover do site</button>'); }).join('') : '<p class="nota">Nenhuma ainda.</p>');
       }).catch(function (e) { $('modEntrar').hidden = false; $('modAviso').textContent = e.message; });
     }
     $('modEntrar').addEventListener('submit', function (e) { e.preventDefault(); senha = $('modSenha').value; try { sessionStorage.setItem('okai-mod', senha); } catch (x) { } carregar(); });
@@ -543,7 +547,7 @@
       if (!nota) return erro('Escolha uma nota de 1 a 5.', $('nota5'));
       if (t.length < 10) return erro('Escreva um pouco mais sobre a sua estadia.', $('demoTexto'));
       erro('');
-      var botao = $('demoBotao'), hotel = $('avalHotel').value.trim().slice(0, 80), publicar = $('avalPublicar').checked;
+      var botao = $('demoBotao'), hotel = $('avalHotel').value.trim().slice(0, 80), publicar = $('avalPublicar').checked, sozinha = (document.querySelector('input[name="sozinha"]:checked') || {}).value || '', perfil = $('avalPerfil').value;
       botao.disabled = true; $('demoResultado').innerHTML = '<p class="nota">Analisando…</p>';
       viaApi(t).then(function (r) { return r; }, function () { var r = analisar(t); r.origem = 'navegador'; return r; }).then(function (r) {
       botao.disabled = false;
@@ -553,9 +557,9 @@
         (r.temas.length ? '<ul class="pilulas">' + r.temas.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p class="nota">Nenhum tema da nossa lista.</p>') +
         (r.pistas.length ? '<p class="nota" style="margin-top:10px">Palavras que mais pesaram: ' + r.pistas.map(esc).join(', ') + '</p>' : '') +
         ((+nota >= 4 && r.classe === 'negativo') || (+nota <= 2 && r.classe === 'positivo') ? '<p class="nota" style="margin-top:8px">O texto e a nota apontam para lados diferentes. Isso acontece, e é por isso que olhamos os dois.</p>' : '') + origem;
-      var l = lerAval(); l.push({ c: c.i, h: hotel, n: +nota, t: t.slice(0, 800), sm: r.classe, tm: r.temas, a: new Date().getFullYear() }); gravarAval(l);
+      var l = lerAval(); l.push({ c: c.i, h: hotel, n: +nota, t: t.slice(0, 800), sm: r.classe, tm: r.temas, a: new Date().getFullYear(), s: sozinha, g: perfil }); gravarAval(l);
       lembrarDestino(c.i); desenharSuas();
-      if (publicar) enviarAoBanco({ cidade: c.i, hotel: hotel, nota: +nota, texto: t, consentimento: true });
+      if (publicar) enviarAoBanco({ cidade: c.i, hotel: hotel, nota: +nota, texto: t, sozinha: sozinha, perfil: perfil, consentimento: true });
       $('avalForm').reset(); $('avalDestino').value = nomeCidade(c);
       });
     });

@@ -29,6 +29,8 @@ module.exports = async function handler(req, res) {
       const texto = typeof corpo.texto === 'string' ? corpo.texto.trim() : '';
       const hotel = typeof corpo.hotel === 'string' ? corpo.hotel.trim().slice(0, 80) : '';
       if (!cidade || !(nota >= 1 && nota <= 5) || texto.length < 10) return res.status(400).json({ erro: 'Avaliação incompleta.' });
+      const sozinha = ['sim', 'nao'].indexOf(corpo.sozinha) >= 0 ? corpo.sozinha : '';
+      const perfil = ['mulher', 'homem', 'outro', 'nao_dizer'].indexOf(corpo.perfil) >= 0 ? corpo.perfil : '';
       if (corpo.consentimento !== true) return res.status(400).json({ erro: 'É preciso concordar com a publicação.' });
 
       const ip = String(req.headers['x-forwarded-for'] || 'sem-ip').split(',')[0].trim();
@@ -39,7 +41,7 @@ module.exports = async function handler(req, res) {
       const limpo = semDadosPessoais(texto.slice(0, 1500));
       const r = analisar(limpo);
       const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-      const item = { id: id, cidade: cidade, hotel: semDadosPessoais(hotel), nota: nota, texto: limpo, classe: r.classe, temas: r.temas, criada: new Date().toISOString(), status: 'pendente' };
+      const item = { id: id, cidade: cidade, hotel: semDadosPessoais(hotel), nota: nota, texto: limpo, sozinha: sozinha, perfil: perfil, classe: r.classe, temas: r.temas, criada: new Date().toISOString(), status: 'pendente' };
       await comandos([['SET', 'aval:' + id, JSON.stringify(item)], ['LPUSH', 'pendentes', id]]);
       return res.status(201).json({ status: 'pendente', analise: r });
     }
