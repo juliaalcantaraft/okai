@@ -1,0 +1,6 @@
+{
+  "name": "okai",
+  "private": true,
+  "description": "Okaí: protótipo acadêmico para mulheres que viajam sozinhas pelo Brasil",
+  "engines": { "node": ">=18" }
+}

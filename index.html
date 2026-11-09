@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Okaí: viaje sozinha, sinta-se em casa</title>
+<meta name="description" content="Protótipo acadêmico para ajudar mulheres a pesquisar destinos e hospedagens no Brasil.">
+<link rel="icon" href="assets/oca.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@600&display=swap">
+<link rel="stylesheet" href="assets/vendor/leaflet.css">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a class="pular" href="#mapa">Pular para o conteúdo</a>
+
+<header id="inicio" class="hero">
+  <nav class="hero-fotos" id="heroFotos" aria-label="Destinos em destaque"></nav>
+  <div class="hero-centro">
+    <svg class="hero-oca" role="img" aria-label="Oca com um pin de localização no centro" viewBox="0 0 200 200"><use href="#oca-d"></use></svg>
+    <h1>Okaí</h1>
+    <div class="busca" role="search">
+      <label class="invisivel" for="busca">Para onde você quer ir?</label>
+      <input id="busca" type="search" placeholder="Para onde você quer ir?" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="buscaLista">
+      <button id="buscaBotao" type="button" aria-label="Pesquisar">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5L21 21"></path></svg>
+      </button>
+      <ul id="buscaLista" class="busca-lista" role="listbox" hidden></ul>
+    </div>
+    <p class="hero-frase">Pesquise um destino no Brasil e veja o que dizem sobre segurança e acolhimento.</p>
+  </div>
+  <div class="hero-rodape">
+    <p id="heroLegenda" class="hero-legenda"></p>
+    <button id="heroPausa" class="hero-pausa" type="button" aria-label="Pausar as fotos">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path id="heroIcone" d="M7 5h4v14H7zM13 5h4v14h-4z"></path></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="menu" aria-label="Principal">
+  <a class="menu-frase" href="#inicio">Viaje sozinha, sinta-se em casa.</a>
+  <div class="menu-links">
+    <a href="#inicio">Início</a>
+    <a href="#mapa">Mapa</a>
+    <a href="#perfil">Seu perfil</a>
+    <a href="#gostou">Gostou de lá?</a>
+    <a href="#antes">Antes de ir</a>
+    <a href="#sobre">Sobre nós</a>
+    <a href="#/avaliacao">Deixe sua avaliação</a>
+    <a href="#/salvos">Salvos (<span id="contaSalvos">0</span>)</a>
+  </div>
+</nav>
+
+<main id="principal">
+  <div id="vistaCidade" class="vista-cidade areia" hidden></div>
+
+  <div id="vistaAvaliacao" class="areia" hidden>
+    <section id="avaliacao" class="secao">
+      <div class="secao-topo"><h2 tabindex="-1">Deixe sua avaliação</h2><p class="lide">Conte como foi a sua hospedagem. A gente mostra o que o sistema entende do seu texto.</p></div>
+      <div class="aval-grade">
+        <form id="avalForm" class="cartao aval-form" novalidate>
+          <label for="avalDestino">Destino</label>
+          <input id="avalDestino" list="listaDestinos" autocomplete="off" placeholder="Ex.: Paraty" required>
+          <label for="avalHotel">Hospedagem <span class="opcional">(opcional)</span></label>
+          <input id="avalHotel" autocomplete="off">
+          <fieldset class="aval-nota"><legend>Sua nota</legend>
+            <div class="estrelas">
+              <input type="radio" id="nota5" name="nota" value="5"><label for="nota5" aria-label="5 de 5">★</label>
+              <input type="radio" id="nota4" name="nota" value="4"><label for="nota4" aria-label="4 de 5">★</label>
+              <input type="radio" id="nota3" name="nota" value="3"><label for="nota3" aria-label="3 de 5">★</label>
+              <input type="radio" id="nota2" name="nota" value="2"><label for="nota2" aria-label="2 de 5">★</label>
+              <input type="radio" id="nota1" name="nota" value="1"><label for="nota1" aria-label="1 de 5">★</label>
+            </div>
+          </fieldset>
+          <label for="demoTexto">Seu comentário</label>
+          <textarea id="demoTexto" rows="4" required placeholder="Como foi o atendimento, a região, a volta à noite?"></textarea>
+          <p id="avalErro" class="aval-erro" role="alert" hidden></p>
+          <button id="demoBotao" class="botao" type="submit">Enviar avaliação</button>
+          <p class="nota">Protótipo: sua avaliação fica salva só neste navegador.</p>
+        </form>
+        <div class="cartao aval-saida">
+          <h3>O que o sistema entendeu</h3>
+          <div id="demoResultado" aria-live="polite"><p class="nota">Envie sua avaliação para ver a análise.</p></div>
+          <h3 class="aval-suas">Suas avaliações</h3>
+          <div id="suasAvaliacoes"></div>
+        </div>
+      </div>
+      <details class="como">
+        <summary>Como analisamos</summary>
+        <div class="como-corpo">
+          <div class="etiquetas-origem">
+            <p><span class="selo selo-real">Real</span> Hospedagens, avaliações do treino e dados do Anuário.</p>
+            <p><span class="selo selo-sim">Simulado</span> Hotéis fictícios, notas, preços e relatos.</p>
+          </div>
+          <h3>Por que olhar além da nota</h3>
+          <div class="dif-grade">
+          <article class="cartao dif"><p class="dif-nota">4,5 <small>de 5</small></p><h3>Hotel A <span class="selo selo-sim">Exemplo fictício</span></h3><blockquote>"A equipe me recebeu muito bem, e a rua é movimentada até tarde. Voltei a pé do jantar tranquila."</blockquote><ul class="pilulas"><li>Acolhimento</li><li>Atendimento</li><li>Segurança</li></ul></article>
+          <article class="cartao dif"><p class="dif-nota">4,5 <small>de 5</small></p><h3>Hotel B <span class="selo selo-sim">Exemplo fictício</span></h3><blockquote>"O quarto é excelente e o café é ótimo, mas a rua fica escura à noite e preferi não sair a pé."</blockquote><ul class="pilulas"><li>Iluminação</li><li>Localização</li><li>Segurança</li></ul></article>
+        </div>
+          <div class="analise-grade">
+            <div class="cartao"><h3>O modelo</h3><div id="metricas"></div></div>
+            <div class="cartao"><h3>Temas nas avaliações reais</h3><div id="temasReais"></div></div>
+          </div>
+          <div class="cartao"><h3>Quem menciona viagem sozinha</h3><p>Indício, não prova: a base não informa gênero.</p><div id="comparacaoReal" class="tabela-caixa"></div></div>
+          <div class="cartao"><h3>Limites</h3>
+            <ul class="limites">
+              <li>Mostramos percepções, nunca garantias de segurança.</li>
+              <li>Temas são achados por palavras-chave, sem entender o contexto todo.</li>
+              <li>Os dados do Anuário valem para o estado inteiro, não para uma cidade.</li>
+              <li>Estar na lista de hospedagens não é recomendação.</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </section>
+  </div>
+
+  <div id="vistaSalvos" class="areia" hidden>
+    <section class="secao">
+      <div class="secao-topo"><h2 tabindex="-1">Seus salvos</h2><p class="lide">Ficam salvos neste navegador.</p></div>
+      <div id="listaSalvos"></div>
+    </section>
+  </div>
+
+  <div id="vistaInicio">
+    <div class="areia">
+      <section id="comece" class="secao">
+        <div class="secao-topo"><h2>Sua próxima viagem começa aqui</h2><p class="lide">Destinos, hospedagens e relatos para planejar sua viagem sozinha.</p></div>
+        <nav class="comece-grade" aria-label="Atalhos">
+          <a class="comece-item" href="#mapa"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Encontre um destino</span></a>
+          <a class="comece-item" href="#perfil"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2Z"/></svg><span>Descubra seu perfil</span></a>
+          <a class="comece-item" href="#gostou"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12h15M14 7l5 5-5 5"/></svg><span>Compare lugares</span></a>
+          <a class="comece-item" href="#antes"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11M4 7l1 1 1.5-2M4 12l1 1 1.5-2M4 17l1 1 1.5-2"/></svg><span>Prepare a viagem</span></a>
+        </nav>
+      </section>
+
+      <section id="mapa" class="secao">
+        <div class="secao-topo"><h2>Encontre o seu destino</h2>
+        <p class="lide">Clique em uma oca para abrir a cidade.</p></div>
+        <div class="filtros">
+          <label>Região
+            <select id="filtroRegiao"><option value="">Todo o Brasil</option><option>Norte</option><option>Nordeste</option><option>Centro-Oeste</option><option>Sudeste</option><option>Sul</option></select>
+          </label>
+          <label>Estado
+            <select id="filtroUf"><option value="">Todos</option></select>
+          </label>
+          <label>Hospedagem
+            <select id="filtroTipo"><option value="t">Todas</option><option value="h">Hotel</option><option value="p">Pousada</option><option value="o">Hostel</option><option value="s">Resort</option></select>
+          </label>
+          <label class="filtro-check"><input id="filtroRelatos" type="checkbox"> Só cidades com relatos</label>
+        </div>
+        <div id="mapaBrasil" class="mapa" role="application" aria-label="Mapa do Brasil com cidades marcadas"></div>
+        <div class="nota-painel"><p id="mapaInfo" class="nota" aria-live="polite"></p>
+        <p class="nota"><span class="chave chave-relato"></span> Com relatos simulados &nbsp; <span class="chave chave-lista"></span> Com hospedagens</p></div>
+      </section>
+
+      <section id="perfil" class="secao">
+        <div class="secao-topo"><h2>Que viajante é você?</h2><p class="lide">Seis perguntas, cinco perfis e sugestões para você.</p></div>
+        <form id="quizPerfil" class="cartao quiz-perfil"></form>
+        <div id="perfilResultado" aria-live="polite"></div>
+      </section>
+
+      <section id="gostou" class="secao">
+        <div class="secao-topo"><h2>Gostou de lá? Vai gostar daqui</h2>
+        <p class="lide">Escolha um lugar do mundo e veja o destino brasileiro parecido.</p></div>
+        <div class="gostou-grade">
+          <form id="quiz" class="cartao quiz">
+            <label class="quiz-rotulo" for="quizLugar">Qual destes lugares mais combina com você?</label><select id="quizLugar"></select>
+            <button class="botao" type="submit">Ver sugestão</button>
+            <div id="quizResultado" aria-live="polite"></div>
+          </form>
+          <figure class="foto-vertical">
+            <img id="fotoDestino" src="assets/img/fervedouro.jpg" alt="Mulher nadando na água azul-clara de um fervedouro, cercado de vegetação" loading="lazy">
+            <figcaption id="fotoLegenda">Fervedouro, Jalapão, TO</figcaption>
+          </figure>
+        </div>
+        <div class="carrossel">
+          <button id="paresAntes" class="seta" type="button" aria-label="Destinos anteriores"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div id="pares" class="pares" tabindex="0" aria-label="Pares de destinos"></div>
+          <button id="paresDepois" class="seta" type="button" aria-label="Próximos destinos"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+      </section>
+
+      <section id="antes" class="secao">
+        <div class="secao-topo"><h2>Antes de ir</h2><p class="lide">Escolha o destino e o mês para ver a melhor época e o que levar.</p></div>
+        <div class="cartao plano">
+          <div class="plano-campos">
+            <label>Destino<input id="planoDestino" list="listaDestinos" autocomplete="off" placeholder="Ex.: Gramado"></label>
+            <label>Mês da viagem<select id="planoMes"></select></label>
+          </div>
+          <div id="planoSaida" aria-live="polite"></div>
+        </div>
+        <div class="antes-grade">
+          <div class="cartao"><h3>Checklist</h3><ul id="checklist" class="checklist"></ul></div>
+          <div class="cartao">
+            <h3>Contatos úteis</h3>
+            <div class="contato"><strong>Ligue 180</strong><p>Central de Atendimento à Mulher. Gratuita, 24 horas.</p>
+              <p class="contato-links"><a href="tel:180">Ligar para 180</a> <a href="https://wa.me/556196100180" rel="noopener" target="_blank">WhatsApp (61) 9610-0180</a></p></div>
+            <div class="contato"><strong>Perigo imediato: 190</strong><p>Polícia Militar.</p></div>
+            <div class="contato"><strong>Saúde: 192 e 193</strong><p>Samu e Bombeiros.</p></div>
+            <p class="nota">Fonte: <a href="https://www.gov.br/pt-br/servicos/denunciar-e-buscar-ajuda-a-vitimas-de-violencia-contra-mulheres" rel="noopener" target="_blank">gov.br</a>.</p>
+          </div>
+        </div>
+      </section>
+      <datalist id="listaDestinos"></datalist>
+
+      
+    </div>
+
+    <section id="sobre" class="secao-nome">
+      <div class="secao-nome-dentro">
+        <h2>Sobre nós</h2>
+        <div class="duas-colunas">
+          <div><h3>O projeto</h3><p>O Okaí nasceu na disciplina de Extração e Análise de Dados para ajudar mulheres a planejar viagens sozinhas pelo Brasil com mais confiança.</p><p class="fonte">Júlia Ferraz, Giovana Couto, Rebeca Bertozzi, Alicia Pizoni e Sofia Bastos</p></div>
+          <div><h3>O nome</h3><p>Em tupi antigo, <em>oka</em> quer dizer casa. Oka é o nosso compromisso com a sua proteção, e o Í é o convite para explorar o Brasil. Sua casa está onde você decidir estar.</p><p class="fonte">Fonte: Navarro, <em>Dicionário de tupi antigo</em> (2013).</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="rodape">
+  <p>Protótipo acadêmico. Hotéis com comentários e notas são fictícios, e os dados simulados estão identificados. Os resultados mostram a percepção presente nos comentários analisados, e não uma garantia de que um local seja seguro ou perigoso.</p>
+  <p>Hospedagens: base pública de CNPJ. Avaliações: Brazilian Portuguese Hotel's Reviews Corpus (Mendeley Data, CC BY 4.0). Coordenadas: kelvins/municipios-brasileiros. Indicadores estaduais: 20º Anuário Brasileiro de Segurança Pública (2026). Imagens ilustrativas, usadas para fins acadêmicos.</p>
+  <p class="rodape-nomes">Júlia Ferraz, Giovana Couto, Rebeca Bertozzi, Alicia Pizoni e Sofia Bastos</p>
+  <p class="rodape-frase">A onça anda sozinha, e ninguém duvida dela.</p>
+</footer>
+
+<button id="chatAbrir" class="chat-abrir" type="button" aria-expanded="false" aria-controls="chatPainel"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 200 200"><use href="#oca-d"></use></svg>Fale com a OkaIA</button>
+<section id="chatPainel" class="chat-painel" aria-label="OkaIA, assistente do Okaí" hidden>
+  <header class="chat-topo"><div><strong>OkaIA</strong><span>Assistente de IA do Okaí</span></div><button id="chatFechar" type="button" aria-label="Fechar a OkaIA"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+  <div id="chatLog" class="chat-log" aria-live="polite"></div>
+  <form id="chatForm" class="chat-form"><label class="invisivel" for="chatTexto">Sua pergunta</label><input id="chatTexto" autocomplete="off" placeholder="Pergunte sobre viagens ou destinos"><button class="botao" type="submit">Enviar</button></form>
+  <p class="chat-aviso">A OkaIA é uma IA e pode errar. Em perigo imediato, ligue 190.</p>
+</section>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="oca-d" viewBox="0 0 200 200"><path fill="currentColor" d="M100 30C54 44 18 98 20 166H38C38 112 64 64 100 30ZM100 30C146 44 182 98 180 166H162C162 112 136 64 100 30ZM93 66C66 88 50 124 50 166H61C61 130 72 96 93 66ZM107 66C134 88 150 124 150 166H139C139 130 128 96 107 66Z"/><path fill="currentColor" fill-rule="evenodd" d="M100 160C93 142 79 130 79 109A21 21 0 1 1 121 109C121 130 107 142 100 160ZM92 109A8 8 0 1 0 108 109A8 8 0 1 0 92 109Z"/><path fill="currentColor" d="M100 34C92 26 90 17 92 8C98 14 101 23 100 34ZM100 34C108 26 110 17 108 8C102 14 99 23 100 34ZM100 34C96 24 96 12 100 3C104 12 104 24 100 34ZM6 172Q100 192 194 172Q100 182 6 172Z"/></symbol></defs></svg>
+
+<script src="assets/vendor/leaflet.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
