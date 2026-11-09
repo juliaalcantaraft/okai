@@ -467,6 +467,13 @@
     return { classe: M.classes[melhor], pistas: pistas.filter(function (p) { return p[1] > 0; }).slice(0, 5).map(function (p) { return p[0]; }), temas: Object.keys(TEMAS_DEMO).filter(function (k) { return TEMAS_DEMO[k].test(t); }) };
   }
   D.analisar = analisar;
+  /* Modelo no servidor: rota /api/analisar do Vercel */
+  function viaApi(texto) {
+    var ctl = window.AbortController ? new AbortController() : null, tempo = setTimeout(function () { if (ctl) ctl.abort(); }, 6000);
+    return fetch('api/analisar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ texto: texto }), signal: ctl ? ctl.signal : undefined })
+      .then(function (r) { clearTimeout(tempo); if (!r.ok) throw new Error('api ' + r.status); return r.json(); })
+      .then(function (r) { if (!r || !r.classe) throw new Error('resposta'); r.origem = 'servidor'; return r; });
+  }
   D.lerAval = function () { return lerAval(); };
 
   var ESTRELA = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>';
@@ -491,14 +498,20 @@
       if (!nota) return erro('Escolha uma nota de 1 a 5.', $('nota5'));
       if (t.length < 10) return erro('Escreva um pouco mais sobre a sua estadia.', $('demoTexto'));
       erro('');
-      var r = analisar(t);
-      $('demoResultado').innerHTML = '<p class="resultado-sent">' + esc(r.classe[0].toUpperCase() + r.classe.slice(1)) + '</p>' +
+      var botao = $('demoBotao'), hotel = $('avalHotel').value.trim().slice(0, 80);
+      botao.disabled = true; $('demoResultado').innerHTML = '<p class="nota">Analisando…</p>';
+      viaApi(t).then(function (r) { return r; }, function () { var r = analisar(t); r.origem = 'navegador'; return r; }).then(function (r) {
+      botao.disabled = false;
+      var prob = r.probabilidades ? '<p class="nota" style="margin-top:6px">Confiança: ' + Math.round(100 * r.probabilidades[r.classe]) + '%</p>' : '';
+      var origem = '<p class="nota aval-origem">' + (r.origem === 'servidor' ? 'Analisado no servidor, pela API do Okaí.' : 'Analisado neste navegador (modo reserva).') + '</p>';
+      $('demoResultado').innerHTML = '<p class="resultado-sent">' + esc(r.classe[0].toUpperCase() + r.classe.slice(1)) + '</p>' + prob +
         (r.temas.length ? '<ul class="pilulas">' + r.temas.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p class="nota">Nenhum tema da nossa lista.</p>') +
         (r.pistas.length ? '<p class="nota" style="margin-top:10px">Palavras que mais pesaram: ' + r.pistas.map(esc).join(', ') + '</p>' : '') +
-        ((+nota >= 4 && r.classe === 'negativo') || (+nota <= 2 && r.classe === 'positivo') ? '<p class="nota" style="margin-top:8px">O texto e a nota apontam para lados diferentes. Isso acontece, e é por isso que olhamos os dois.</p>' : '');
-      var l = lerAval(); l.push({ c: c.i, h: $('avalHotel').value.trim().slice(0, 80), n: +nota, t: t.slice(0, 800), sm: r.classe, tm: r.temas, a: new Date().getFullYear() }); gravarAval(l);
+        ((+nota >= 4 && r.classe === 'negativo') || (+nota <= 2 && r.classe === 'positivo') ? '<p class="nota" style="margin-top:8px">O texto e a nota apontam para lados diferentes. Isso acontece, e é por isso que olhamos os dois.</p>' : '') + origem;
+      var l = lerAval(); l.push({ c: c.i, h: hotel, n: +nota, t: t.slice(0, 800), sm: r.classe, tm: r.temas, a: new Date().getFullYear() }); gravarAval(l);
       lembrarDestino(c.i); desenharSuas();
       $('avalForm').reset(); $('avalDestino').value = nomeCidade(c);
+      });
     });
     desenharSuas();
     $('metricas').innerHTML = '<div class="metricas"><div class="metrica"><strong>' + num(R.avaliacoes_validas) + '</strong><span>avaliações reais em português, de ' + R.periodo[0] + ' a ' + R.periodo[1] + '</span></div>' +

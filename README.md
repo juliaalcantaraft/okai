@@ -11,7 +11,8 @@ Grupo: Júlia Ferraz, Giovana Couto, Rebeca Bertozzi, Alicia Pizoni e Sofia Bast
 | `index.html` | A página do site |
 | `assets/` | Estilos, código, imagens e o mapa |
 | `data/` | Dados prontos: hospedagens, cidades, modelo e indicadores |
-| `api/okaia.js` | Função do Vercel que conecta a OkaIA ao Gemini |
+| `api/analisar.js` | API de análise de sentimento: recebe uma avaliação e devolve sentimento, confiança, temas e palavras-chave |
+| `api/okaia.js` | API da OkaIA: conecta o chat ao Gemini |
 | `notebooks/` | Notebooks do Colab que geraram os dados |
 
 ## Dados
@@ -29,3 +30,12 @@ Grupo: Júlia Ferraz, Giovana Couto, Rebeca Bertozzi, Alicia Pizoni e Sofia Bast
 | `GEMINI_MODEL` | Opcional. Padrão: `gemini-3.6-flash` |
 
 Sem a chave, o site funciona normalmente e a OkaIA responde no modo simples.
+
+## API
+
+| Rota | Entrada (POST, JSON) | Saída |
+|---|---|---|
+| `/api/analisar` | `{"texto": "..."}` | `classe`, `probabilidades`, `temas`, `pistas` |
+| `/api/okaia` | `{"mensagens": [{"papel": "eu", "texto": "..."}], "contexto": "..."}` | `texto` |
+
+Se a API não responder, o site usa uma cópia do modelo no navegador e avisa que está no modo reserva.

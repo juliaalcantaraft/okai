@@ -331,3 +331,4 @@ select,textarea,.hoteis-ferramentas input,.hoteis-ferramentas select,.chat-form 
 .busca-lista{border-radius:4px}
 .metrica strong{font-size:40px}
 @media (max-width:820px){.secao>.secao-topo{padding-top:64px}.secao{margin-bottom:72px}.cartao{padding:24px}.areia::before{background-size:200% auto}}
+.aval-origem{margin-top:12px!important;font-size:13px;color:#6F5645}
