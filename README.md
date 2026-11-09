@@ -28,6 +28,8 @@ Grupo: Júlia Ferraz, Giovana Couto, Rebeca Bertozzi, Alicia Pizoni e Sofia Bast
 |---|---|
 | `GEMINI_API_KEY` | Sua chave do Google AI Studio |
 | `GEMINI_MODEL` | Opcional. Padrão: `gemini-3.6-flash` |
+| `KV_REST_API_URL` e `KV_REST_API_TOKEN` | Criadas sozinhas ao conectar o banco Upstash Redis na aba Storage |
+| `MODERACAO_SENHA` | Senha da página de moderação (`/#/moderar`) |
 
 Sem a chave, o site funciona normalmente e a OkaIA responde no modo simples.
 
@@ -36,6 +38,12 @@ Sem a chave, o site funciona normalmente e a OkaIA responde no modo simples.
 | Rota | Entrada (POST, JSON) | Saída |
 |---|---|---|
 | `/api/analisar` | `{"texto": "..."}` | `classe`, `probabilidades`, `temas`, `pistas` |
+| `/api/avaliacoes` | POST `{cidade, hotel, nota, texto, consentimento: true}` · GET `?cidade=<IBGE>` | Guarda como pendente · lista as aprovadas |
+| `/api/moderar` | Cabeçalho `x-okai-senha`. GET · POST `{id, acao}` | Lista pendentes · aprova ou recusa |
 | `/api/okaia` | `{"mensagens": [{"papel": "eu", "texto": "..."}], "contexto": "..."}` | `texto` |
 
 Se a API não responder, o site usa uma cópia do modelo no navegador e avisa que está no modo reserva.
+
+## Avaliações com moderação
+
+Quem avalia pode marcar que quer publicar. A avaliação entra como **pendente**, com e-mails e telefones apagados, e só aparece na página da cidade depois que alguém da equipe aprova em `/#/moderar`. Limite de 5 envios por hora por conexão.

@@ -74,8 +74,9 @@
           <label for="demoTexto">Seu comentário</label>
           <textarea id="demoTexto" rows="4" required placeholder="Como foi o atendimento, a região, a volta à noite?"></textarea>
           <p id="avalErro" class="aval-erro" role="alert" hidden></p>
+          <label class="aval-publicar"><input type="checkbox" id="avalPublicar"> <span>Quero que minha avaliação apareça para outras viajantes, depois de revisada pela equipe.</span></label>
+          <p class="nota">Não escreva nomes, telefones ou e-mails. Sem marcar, ela fica só neste navegador.</p>
           <button id="demoBotao" class="botao" type="submit">Enviar avaliação</button>
-          <p class="nota">Protótipo: sua avaliação fica salva só neste navegador.</p>
         </form>
         <div class="cartao aval-saida">
           <h3>O que o sistema entendeu</h3>
@@ -111,6 +112,18 @@
           </div>
         </div>
       </details>
+    </section>
+  </div>
+
+  <div id="vistaModerar" class="areia" hidden>
+    <section class="secao">
+      <div class="secao-topo"><h2 tabindex="-1">Moderação</h2><p class="lide">Avaliações enviadas que esperam revisão.</p></div>
+      <form id="modEntrar" class="cartao plano-campos" style="max-width:520px">
+        <label>Senha da moderação<input id="modSenha" type="password" autocomplete="current-password" required></label>
+        <button class="botao" type="submit" style="align-self:flex-end">Entrar</button>
+      </form>
+      <p id="modAviso" class="nota" role="status"></p>
+      <div id="modLista"></div>
     </section>
   </div>
 

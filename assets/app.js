@@ -467,6 +467,51 @@
     return { classe: M.classes[melhor], pistas: pistas.filter(function (p) { return p[1] > 0; }).slice(0, 5).map(function (p) { return p[0]; }), temas: Object.keys(TEMAS_DEMO).filter(function (k) { return TEMAS_DEMO[k].test(t); }) };
   }
   D.analisar = analisar;
+  /* Banco de avaliações com moderação: rotas /api/avaliacoes e /api/moderar */
+  function enviarAoBanco(dados) {
+    var aviso = document.createElement('p'); aviso.className = 'nota aval-origem'; aviso.textContent = 'Enviando para revisão…';
+    $('demoResultado').appendChild(aviso);
+    fetch('api/avaliacoes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+      .then(function (r) { aviso.textContent = r.ok ? 'Recebida! Ela aparece na página da cidade depois de revisada.' : (r.status === 503 ? 'A publicação ainda não está ativa. Sua avaliação ficou salva neste navegador.' : (r.j.erro || 'Não foi possível enviar agora.')); })
+      .catch(function () { aviso.textContent = 'Não foi possível enviar agora. Sua avaliação ficou salva neste navegador.'; });
+  }
+  function avaliacoesReais(id) {
+    var alvo = $('blocoReais'); if (!alvo) return;
+    fetch('api/avaliacoes?cidade=' + encodeURIComponent(id)).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(function (j) {
+      if (!j.avaliacoes || !j.avaliacoes.length || !$('blocoReais')) return;
+      alvo.innerHTML = '<h3>Relatos de viajantes <span class="selo selo-real">Real</span></h3><p class="nota">Enviados por visitantes e revisados pela equipe antes de aparecer.</p>' + j.avaliacoes.map(function (x) {
+        return '<article class="relato"><div class="relato-meta"><span class="relato-hotel">' + esc(x.hotel || 'Hospedagem não informada') + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="relato-meta"><span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span>' + (x.temas.length ? '<span>Temas: ' + esc(x.temas.join(', ')) + '</span>' : '') + '<span>' + esc(x.mes.split('-').reverse().join('/')) + '</span></div></article>';
+      }).join('');
+      alvo.hidden = false;
+    }).catch(function () { });
+  }
+  D.avaliacoesReais = avaliacoesReais;
+  function moderacao() {
+    var senha = ''; try { senha = sessionStorage.getItem('okai-mod') || ''; } catch (e) { }
+    function pedir(metodo, corpo) {
+      return fetch('api/moderar', { method: metodo, headers: { 'Content-Type': 'application/json', 'x-okai-senha': senha }, body: corpo ? JSON.stringify(corpo) : undefined })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.erro || 'Erro ' + r.status); return j; }); });
+    }
+    function carregar() {
+      $('modAviso').textContent = 'Carregando…';
+      pedir('GET').then(function (j) {
+        $('modEntrar').hidden = true;
+        $('modAviso').textContent = j.pendentes.length ? j.pendentes.length + ' avaliação(ões) esperando revisão.' : 'Nenhuma avaliação pendente.';
+        $('modLista').innerHTML = j.pendentes.map(function (x) {
+          var c = D.porId[x.cidade];
+          return '<article class="cartao relato" data-id="' + esc(x.id) + '" style="margin-bottom:12px"><div class="relato-meta"><span class="relato-hotel">' + esc(c ? nomeCidade(c) : x.cidade) + (x.hotel ? ' · ' + esc(x.hotel) : '') + '</span><span>Nota ' + x.nota + ' de 5</span><span>Sistema: ' + esc(x.classe) + '</span></div><blockquote>' + esc(x.texto) + '</blockquote><div class="perfil-links"><button class="botao" type="button" data-acao="aprovar">Aprovar</button><button class="botao botao-claro" type="button" data-acao="recusar">Recusar</button></div></article>';
+        }).join('');
+      }).catch(function (e) { $('modEntrar').hidden = false; $('modAviso').textContent = e.message; });
+    }
+    $('modEntrar').addEventListener('submit', function (e) { e.preventDefault(); senha = $('modSenha').value; try { sessionStorage.setItem('okai-mod', senha); } catch (x) { } carregar(); });
+    $('modLista').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-acao]'); if (!b) return;
+      var card = b.closest('[data-id]'); b.disabled = true;
+      pedir('POST', { id: card.getAttribute('data-id'), acao: b.getAttribute('data-acao') }).then(carregar).catch(function (er) { b.disabled = false; $('modAviso').textContent = er.message; });
+    });
+    D.abrirModeracao = function () { if (senha) carregar(); };
+  }
   /* Modelo no servidor: rota /api/analisar do Vercel */
   function viaApi(texto) {
     var ctl = window.AbortController ? new AbortController() : null, tempo = setTimeout(function () { if (ctl) ctl.abort(); }, 6000);
@@ -498,7 +543,7 @@
       if (!nota) return erro('Escolha uma nota de 1 a 5.', $('nota5'));
       if (t.length < 10) return erro('Escreva um pouco mais sobre a sua estadia.', $('demoTexto'));
       erro('');
-      var botao = $('demoBotao'), hotel = $('avalHotel').value.trim().slice(0, 80);
+      var botao = $('demoBotao'), hotel = $('avalHotel').value.trim().slice(0, 80), publicar = $('avalPublicar').checked;
       botao.disabled = true; $('demoResultado').innerHTML = '<p class="nota">Analisando…</p>';
       viaApi(t).then(function (r) { return r; }, function () { var r = analisar(t); r.origem = 'navegador'; return r; }).then(function (r) {
       botao.disabled = false;
@@ -510,6 +555,7 @@
         ((+nota >= 4 && r.classe === 'negativo') || (+nota <= 2 && r.classe === 'positivo') ? '<p class="nota" style="margin-top:8px">O texto e a nota apontam para lados diferentes. Isso acontece, e é por isso que olhamos os dois.</p>' : '') + origem;
       var l = lerAval(); l.push({ c: c.i, h: hotel, n: +nota, t: t.slice(0, 800), sm: r.classe, tm: r.temas, a: new Date().getFullYear() }); gravarAval(l);
       lembrarDestino(c.i); desenharSuas();
+      if (publicar) enviarAoBanco({ cidade: c.i, hotel: hotel, nota: +nota, texto: t, consentimento: true });
       $('avalForm').reset(); $('avalDestino').value = nomeCidade(c);
       });
     });
@@ -624,7 +670,7 @@
     var anos = Array.from(new Set(todos.map(function (x) { return x.a; }))).sort();
     var outras = Array.from(new Set(D.comentarios.map(function (x) { return x.c; }))).filter(function (x) { return x !== id; }).map(function (x) { return D.porId[x]; }).sort(function (a, b) { return a.n.localeCompare(b.n); });
     v.innerHTML = '<div><a class="voltar" href="#mapa">Voltar ao mapa</a><div class="cidade-topo"><h2 tabindex="-1">' + esc(c.n) + ', ' + esc(c.u) + '</h2><p>' + esc(c.r) + ' · ' + (c.t ? num(c.t) + (c.t === 1 ? ' hospedagem na lista' : ' hospedagens na lista') : 'ainda sem hospedagens na nossa lista') + '</p>' + botaoDestino(c.i, true) + ' <a class="botao botao-claro salvar-grande" href="#antes">O que levar</a> <a class="botao botao-claro salvar-grande" href="#/avaliacao">Avaliar</a><p class="plano-epoca"><strong>Melhor época:</strong> ' + esc(melhorEpoca(c)) + '</p></div>' +
-      '<div class="cidade-grade"><div style="display:flex;flex-direction:column;gap:16px"><section class="cartao" id="blocoRelatos"></section></div>' +
+      '<div class="cidade-grade"><div style="display:flex;flex-direction:column;gap:16px"><section class="cartao" id="blocoReais" hidden></section><section class="cartao" id="blocoRelatos"></section></div>' +
       '<div style="display:flex;flex-direction:column;gap:16px">' + precosHtml(c) + '<section class="cartao" style="order:3"><h3>Onde ficar <span class="selo selo-real">Real</span></h3><div id="blocoHoteis"><p>Carregando...</p></div></section>' +
       '<section class="cartao" style="order:1"><h3>Contexto do estado <span class="selo selo-real">Real</span></h3>' + contextoHtml(c) + '<p class="nota" style="margin-top:12px">Mais dados oficiais:</p><ul class="limites"><li><a rel="noopener" target="_blank" href="https://mmulheres.dataprev.gov.br/">DataMulheres</a></li><li><a rel="noopener" target="_blank" href="https://www12.senado.leg.br/institucional/omv/">DataSenado, Observatório da Mulher contra a Violência</a></li><li><a rel="noopener" target="_blank" href="https://forumseguranca.org.br/">Anuário Brasileiro de Segurança Pública</a></li></ul></section>' +
       (outras.length ? '<section class="cartao" style="order:4"><h3>Comparar</h3><label for="comparar" class="nota">Comparar com</label><select id="comparar"><option value="">Escolha uma cidade</option>' + outras.map(function (o) { return '<option value="' + o.i + '">' + esc(o.n) + ', ' + esc(o.u) + '</option>'; }).join('') + '</select><div id="blocoComparar" class="tabela-caixa"></div></section>' : '') +
@@ -646,6 +692,7 @@
       var linhas = [['Hospedagens', num(c.t), num(o.t)], ['Relatos simulados', ra.n, rb.n], ['Positivos', ra.pos + '%', rb.pos + '%'], ['Negativos', ra.neg + '%', rb.neg + '%'], ['Citam segurança', ra.temas['Segurança'] || 0, rb.temas['Segurança'] || 0], ['Situações de risco', ra.temas['Situações de risco'] || 0, rb.temas['Situações de risco'] || 0], ['Citam iluminação', ra.temas['Iluminação'] || 0, rb.temas['Iluminação'] || 0], ['Citam acolhimento', ra.temas['Acolhimento'] || 0, rb.temas['Acolhimento'] || 0]];
       $('blocoComparar').innerHTML = '<table style="margin-top:12px"><thead><tr><th></th><th class="num">' + esc(c.n) + '</th><th class="num">' + esc(o.n) + '</th></tr></thead><tbody>' + linhas.map(function (l) { return '<tr><td>' + l[0] + '</td><td class="num">' + l[1] + '</td><td class="num">' + l[2] + '</td></tr>'; }).join('') + '</tbody></table>';
     });
+    avaliacoesReais(c.i);
     hoteisDe(c).then(function (lista) {
       var alvo = $('blocoHoteis'); if (!alvo) return;
       if (!lista.length) { alvo.innerHTML = '<p>Ainda não há hospedagens desta cidade na nossa lista.</p>'; return; }
@@ -664,14 +711,15 @@
     var h = location.hash;
     if (h === '#/como-analisamos') { location.replace('#/avaliacao'); return; }
     if (h === '#nome') { location.replace('#sobre'); return; }
-    var m = h.match(/^#\/cidade\/(\d+)/), vc = $('vistaCidade'), vi = $('vistaInicio'), va = $('vistaAvaliacao'), vs = $('vistaSalvos');
+    var m = h.match(/^#\/cidade\/(\d+)/), vc = $('vistaCidade'), vi = $('vistaInicio'), va = $('vistaAvaliacao'), vs = $('vistaSalvos'), vmod = $('vistaModerar');
     var sub = /^#\//.test(h);
     document.body.classList.toggle('subpagina', sub);
-    vc.hidden = !m; va.hidden = h !== '#/avaliacao'; vs.hidden = h !== '#/salvos'; vi.hidden = sub;
+    vc.hidden = !m; va.hidden = h !== '#/avaliacao'; vs.hidden = h !== '#/salvos'; vmod.hidden = h !== '#/moderar'; vi.hidden = sub;
     function focar(sel) { var t = document.querySelector(sel); window.scrollTo(0, 0); if (t) t.focus({ preventScroll: true }); }
     if (m) { cidade(m[1]); document.title = (D.porId[m[1]] ? D.porId[m[1]].n + ' | ' : '') + 'Okaí'; focar('.cidade-topo h2'); return; }
     if (h === '#/avaliacao') { var c = destinoAtual(); if (c && !$('avalDestino').value) $('avalDestino').value = nomeCidade(c); document.title = 'Deixe sua avaliação | Okaí'; focar('#avaliacao h2'); return; }
     if (h === '#/salvos') { desenharSalvos(); document.title = 'Seus salvos | Okaí'; focar('#vistaSalvos h2'); return; }
+    if (h === '#/moderar') { document.title = 'Moderação | Okaí'; focar('#vistaModerar h2'); if (D.abrirModeracao) D.abrirModeracao(); return; }
     if (sub) { location.hash = '#inicio'; return; }
     document.title = 'Okaí: viaje sozinha, sinta-se em casa';
     if (D.atualizarMapa) D.atualizarMapa();
@@ -683,7 +731,7 @@
   Promise.all([json('data/cidades.json'), json('data/comentarios.json'), json('data/modelo_sentimento.json'), json('data/resumo_avaliacoes.json'), json('data/hoteis_ficticios.json'), json('data/anuario.json')]).then(function (r) {
     D.cidades = r[0]; D.comentarios = r[1]; D.modelo = r[2]; D.resumo = r[3]; D.ficticios = r[4]; D.anuario = r[5];
     D.cidades.forEach(function (c) { c._b = norm(c.n + ' ' + c.u); D.porId[c.i] = c; });
-    busca(); mapa(); painel(); gostou(); quizPerfil(); preencherDestinos(); planejador(); window.addEventListener('hashchange', rota); rota();
+    busca(); mapa(); painel(); moderacao(); gostou(); quizPerfil(); preencherDestinos(); planejador(); window.addEventListener('hashchange', rota); rota();
     window.__okai = D;
   }).catch(function (err) {
     if (window.console) console.error(err);
