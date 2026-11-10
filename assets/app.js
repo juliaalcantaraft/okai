@@ -1024,4 +1024,10 @@
     window.addEventListener('resize', function () { if (medir()) { normalizar(); atualizar(); } });
     if (pares.children.length) montar();
   })();
+    /* Menu: rola junto com a página (não fica fixo no topo) */
+  (function () {
+    var st = document.createElement('style');
+    st.textContent = '.menu{position:static !important}';
+    document.head.appendChild(st);
+  })();
 })();
