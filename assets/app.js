@@ -830,4 +830,12 @@
       document.getElementById('quizResultado').innerHTML = '';
     }
   }, true);
+    /* Gostou de lá?: o botão "Ver sugestão" some depois de apertado */
+  (function () {
+    var form = document.getElementById('quiz');
+    var botao = form.querySelector('button[type="submit"]');
+    var lugar = document.getElementById('quizLugar');
+    form.addEventListener('submit', function () { botao.style.display = 'none'; });
+    lugar.addEventListener('input', function () { botao.style.display = ''; });
+  })();
 })();
