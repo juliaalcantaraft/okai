@@ -814,12 +814,13 @@
     document.getElementById('planoDestino').placeholder = 'Selecione aqui';
     document.getElementById('avalDestino').placeholder = 'Selecione aqui';
   })();
-   /* Menu: sem meia lua, só o traço reto embaixo do item ativo */
+ /* Menu: um único traço reto embaixo do item ativo */
   (function () {
     var st = document.createElement('style');
     st.textContent =
-      '.menu-links a{border-radius:0 !important;background:none !important;box-shadow:none !important}' +
-      '.menu-links a[aria-current],.menu-links a[aria-current]:hover,.menu-links a[aria-current]:focus,.menu-links a[aria-current]:focus-visible{outline:none !important;text-decoration:underline !important;text-decoration-thickness:2px !important;text-underline-offset:8px !important}';
+      '.menu .menu-links a{border:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;text-decoration:none !important}' +
+      '.menu .menu-links a::before,.menu .menu-links a::after{content:none !important}' +
+      '.menu .menu-links a[aria-current],.menu .menu-links a[aria-current]:hover,.menu .menu-links a[aria-current]:focus,.menu .menu-links a[aria-current]:focus-visible{outline:none !important;border:0 !important;text-decoration:underline !important;text-decoration-thickness:2px !important;text-underline-offset:8px !important}';
     document.head.appendChild(st);
   })();
 })();
