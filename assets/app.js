@@ -838,4 +838,10 @@
     form.addEventListener('submit', function () { botao.style.display = 'none'; });
     lugar.addEventListener('input', function () { botao.style.display = ''; });
   })();
+  /* Gostou de lá?: tira a linha acima do resultado */
+  (function () {
+    var st = document.createElement('style');
+    st.textContent = '#quizResultado>div{border-top:0 !important}';
+    document.head.appendChild(st);
+  })();
 })();
