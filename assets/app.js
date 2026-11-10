@@ -741,4 +741,40 @@
     if (window.console) console.error(err);
     $('mapaInfo').textContent = 'Não foi possível carregar os dados. Abra o site por um endereço publicado, não como arquivo local.';
   });
+    /* Abas, menu no topo, créditos só no início e quiz sem avanço automático */
+  (function () {
+    var st = document.createElement('style');
+    st.textContent = '.aba-oculta{display:none !important}.menu{position:sticky;top:0;z-index:2000}';
+    document.head.appendChild(st);
+
+    var ESCONDER_HERO_FORA_DO_INICIO = true; // false = a foto grande aparece em todas as abas
+    var secoes = ['comece', 'mapa', 'perfil', 'gostou', 'antes', 'sobre'];
+    var alias = { inicio: 'comece', comece: 'comece', mapa: 'mapa', perfil: 'perfil', gostou: 'gostou', antes: 'antes', sobre: 'sobre' };
+    var areia = document.querySelector('#vistaInicio > .areia');
+    var menu = document.querySelector('.menu');
+    var heroEl = document.querySelector('.hero');
+    var rodape = document.querySelector('.rodape');
+
+    document.body.insertBefore(menu, document.querySelector('.pular').nextSibling);
+
+    document.getElementById('quizPerfil').addEventListener('pointerdown', function (e) { e.stopPropagation(); }, true);
+
+    function mostrar(rolar) {
+      var h = location.hash.replace('#', '');
+      var emInicio = (h === '' || h === 'inicio');
+      if (ESCONDER_HERO_FORA_DO_INICIO) heroEl.classList.toggle('aba-oculta', !emInicio);
+      rodape.classList.toggle('aba-oculta', !emInicio);
+      if (h.charAt(0) === '/') { if (rolar) window.scrollTo(0, 0); return; }
+      var alvo = alias[h] || 'comece';
+      secoes.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.classList.toggle('aba-oculta', id !== alvo);
+      });
+      areia.classList.toggle('aba-oculta', alvo === 'sobre');
+      if (alvo === 'mapa') setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 50);
+      if (rolar) window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', function () { mostrar(true); });
+    mostrar(false);
+  })();
 })();
