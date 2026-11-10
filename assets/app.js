@@ -777,4 +777,41 @@
     window.addEventListener('hashchange', function () { mostrar(true); });
     mostrar(false);
   })();
+    /* "Selecione aqui" nos campos de escolha (Gostou de lá?, Antes de ir, Avaliação) */
+  (function () {
+    function colocar(sel) {
+      if (!sel || (sel.firstElementChild && sel.firstElementChild.dataset.aqui)) return;
+      var o = document.createElement('option');
+      o.value = ''; o.textContent = 'Selecione aqui';
+      o.disabled = true; o.hidden = true; o.setAttribute('selected', ''); o.dataset.aqui = '1';
+      sel.insertBefore(o, sel.firstChild);
+      sel.selectedIndex = 0;
+    }
+    function observar(sel, depois) {
+      new MutationObserver(function () { colocar(sel); if (depois) depois(); }).observe(sel, { childList: true });
+      if (sel.children.length) colocar(sel);
+    }
+
+    // Gostou de lá?
+    var lugar = document.getElementById('quizLugar');
+    lugar.required = true;            // sem escolher, o botão "Ver sugestão" pede para selecionar
+    observar(lugar);
+
+    // Antes de ir: mês
+    var mes = document.getElementById('planoMes'), saida = document.getElementById('planoSaida');
+    function conferirMes() {
+      if (mes.value === '' && saida.querySelector('.plano-res')) saida.innerHTML = '<p class="nota">Escolha o mês da viagem.</p>';
+    }
+    observar(mes, conferirMes);
+    new MutationObserver(conferirMes).observe(saida, { childList: true });
+
+    // Deixe sua avaliação: "Como você se identifica?"
+    var perfil = document.getElementById('avalPerfil'), p0 = perfil.options[0];
+    p0.textContent = 'Selecione aqui'; p0.disabled = true; p0.hidden = true;
+    p0.setAttribute('selected', ''); p0.dataset.aqui = '1'; perfil.selectedIndex = 0;
+
+    // Campos de destino (digitar e escolher na lista)
+    document.getElementById('planoDestino').placeholder = 'Selecione aqui';
+    document.getElementById('avalDestino').placeholder = 'Selecione aqui';
+  })();
 })();
