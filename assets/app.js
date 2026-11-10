@@ -1030,4 +1030,25 @@
     st.textContent = '.menu{position:static !important}';
     document.head.appendChild(st);
   })();
+    /* Rosa clarinho: ocas maiores do mapa e ícone da aba */
+  (function () {
+    var ROSA = '#EFA6B5';
+
+    // ocas maiores do mapa (as com relatos)
+    var st = document.createElement('style');
+    st.textContent = '.oca-pin.destaque{color:' + ROSA + ' !important;filter:drop-shadow(0 0 1px rgba(107,34,48,.8)) drop-shadow(0 1px 2px rgba(58,33,24,.35))}';
+    document.head.appendChild(st);
+
+    // ícone da aba do navegador, com a mesma oca do site
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><g fill="' + ROSA + '">' +
+      '<path d="M100 30C54 44 18 98 20 166H38C38 112 64 64 100 30ZM100 30C146 44 182 98 180 166H162C162 112 136 64 100 30ZM93 66C66 88 50 124 50 166H61C61 130 72 96 93 66ZM107 66C134 88 150 124 150 166H139C139 130 128 96 107 66Z"/>' +
+      '<path fill-rule="evenodd" d="M100 160C93 142 79 130 79 109A21 21 0 1 1 121 109C121 130 107 142 100 160ZM92 109A8 8 0 1 0 108 109A8 8 0 1 0 92 109Z"/>' +
+      '<path d="M100 34C92 26 90 17 92 8C98 14 101 23 100 34ZM100 34C108 26 110 17 108 8C102 14 99 23 100 34ZM100 34C96 24 96 12 100 3C104 12 104 24 100 34ZM6 172Q100 192 194 172Q100 182 6 172Z"/>' +
+      '</g></svg>';
+    document.querySelectorAll('link[rel~="icon"]').forEach(function (l) { l.remove(); });
+    var ic = document.createElement('link');
+    ic.rel = 'icon'; ic.type = 'image/svg+xml';
+    ic.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
+    document.head.appendChild(ic);
+  })();
 })();
