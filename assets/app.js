@@ -823,4 +823,11 @@
       '.menu .menu-links a[aria-current],.menu .menu-links a[aria-current]:hover,.menu .menu-links a[aria-current]:focus,.menu .menu-links a[aria-current]:focus-visible{outline:none !important;border:0 !important;text-decoration:underline !important;text-decoration-thickness:2px !important;text-underline-offset:8px !important}';
     document.head.appendChild(st);
   })();
+  /* Gostou de lá?: a foto só muda ao apertar "Ver sugestão" */
+  document.getElementById('quiz').addEventListener('change', function (e) {
+    if (e.target.id === 'quizLugar') {
+      e.stopPropagation();
+      document.getElementById('quizResultado').innerHTML = '';
+    }
+  }, true);
 })();
