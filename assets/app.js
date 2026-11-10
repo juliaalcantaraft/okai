@@ -920,17 +920,19 @@
     }, 100);
     setTimeout(function () { clearInterval(espera); }, 10000);
   })();
-    /* Gostou de lá?: sem barra de rolagem clicável, só uma barrinha de progresso decorativa */
+   /* Gostou de lá?: carrossel infinito, setas sempre girando, barrinha de progresso decorativa */
   (function () {
     var pares = document.getElementById('pares');
+    var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var N = 0, setW = 0, pitch = 0, montado = false, posicionado = false, tempo = null;
 
     var st = document.createElement('style');
     st.textContent =
       '#pares{scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px}' +
       '#pares::-webkit-scrollbar{display:none}' +
       '.pares-caixa{flex:1;min-width:0}' +
-      '.pares-trilho{position:relative;height:3px;margin-top:14px;background:var(--linha);border-radius:2px;pointer-events:none}' +
-      '.pares-trilho span{position:absolute;left:0;top:0;height:100%;width:30%;background:var(--marrom);border-radius:2px}' +
+      '.pares-trilho{position:relative;overflow:hidden;height:3px;margin-top:14px;background:var(--linha);border-radius:2px;pointer-events:none}' +
+      '.pares-trilho span{position:absolute;top:0;height:100%;background:var(--marrom);border-radius:2px}' +
       '@media (min-width:821px){.carrossel{align-items:flex-start}.carrossel .seta{margin-top:63px}}' +
       '@media (max-width:820px){.pares-caixa{order:-1;flex:1 0 100%}}';
     document.head.appendChild(st);
@@ -939,28 +941,87 @@
     caixa.className = 'pares-caixa';
     pares.parentNode.insertBefore(caixa, pares);
     caixa.appendChild(pares);
-
     var trilho = document.createElement('div');
     trilho.className = 'pares-trilho';
     trilho.setAttribute('aria-hidden', 'true');
-    var barra = document.createElement('span');
-    trilho.appendChild(barra);
+    var b1 = document.createElement('span'), b2 = document.createElement('span');
+    trilho.appendChild(b1); trilho.appendChild(b2);
     caixa.appendChild(trilho);
 
-    function atualizar() {
-      var total = pares.scrollWidth, visivel = pares.clientWidth;
-      if (total <= visivel + 1) { trilho.style.visibility = 'hidden'; return; }
-      trilho.style.visibility = 'visible';
-      var largura = Math.max(visivel / total, 0.08);
-      var livre = 1 - largura;
-      var progresso = pares.scrollLeft / (total - visivel);
-      barra.style.width = (largura * 100) + '%';
-      barra.style.left = (progresso * livre * 100) + '%';
+    function jump(d) {
+      pares.style.scrollSnapType = 'none';
+      pares.style.scrollBehavior = 'auto';
+      pares.scrollLeft += d;
+      requestAnimationFrame(function () { pares.style.scrollSnapType = ''; });
     }
 
-    pares.addEventListener('scroll', atualizar, { passive: true });
-    window.addEventListener('resize', atualizar);
-    new MutationObserver(atualizar).observe(pares, { childList: true });
-    atualizar();
+    function montar() {
+      var orig = Array.prototype.slice.call(pares.children);
+      if (!orig.length) return;
+      montado = true; N = orig.length;
+      function copias() {
+        var f = document.createDocumentFragment();
+        orig.forEach(function (o) {
+          var c = o.cloneNode(true);
+          c.setAttribute('aria-hidden', 'true'); c.tabIndex = -1; c.setAttribute('data-clone', '1');
+          f.appendChild(c);
+        });
+        return f;
+      }
+      pares.insertBefore(copias(), pares.firstChild);
+      pares.appendChild(copias());
+      medir();
+    }
+
+    function medir() {
+      if (!montado || !pares.clientWidth) return false;   // aba escondida: espera aparecer
+      var f = pares.children;
+      var a = f[N].getBoundingClientRect().left;
+      setW = f[2 * N].getBoundingClientRect().left - a;
+      pitch = f[N + 1].getBoundingClientRect().left - a;
+      if (!posicionado) {                                  // começa no primeiro destino de verdade
+        posicionado = true;
+        jump(a - pares.getBoundingClientRect().left);
+      }
+      return true;
+    }
+
+    function normalizar() {
+      if (!setW) return;
+      var x = pares.scrollLeft;
+      if (x < setW * 0.5) jump(setW);
+      else if (x > setW * 1.5) jump(-setW);
+    }
+
+    function atualizar() {
+      if (!setW) { trilho.style.visibility = 'hidden'; return; }
+      trilho.style.visibility = 'visible';
+      var w = Math.min(pares.clientWidth / setW, 1) * 100;
+      var frac = ((((pares.scrollLeft - setW) / setW) % 1) + 1) % 1 * 100;
+      b1.style.width = b2.style.width = w + '%';
+      b1.style.left = frac + '%';
+      b2.style.left = (frac - 100) + '%';
+    }
+
+    pares.addEventListener('scroll', function () {
+      atualizar();
+      clearTimeout(tempo);
+      tempo = setTimeout(normalizar, 150);
+    }, { passive: true });
+
+    // as setas giram sem parar, nos dois sentidos
+    document.querySelector('.carrossel').addEventListener('click', function (e) {
+      var b = e.target.closest('#paresAntes,#paresDepois');
+      if (!b) return;
+      e.stopPropagation(); e.preventDefault();
+      if (!medir()) return;
+      normalizar();
+      pares.scrollBy({ left: (b.id === 'paresDepois' ? 1 : -1) * pitch, behavior: reduz ? 'auto' : 'smooth' });
+    }, true);
+
+    new MutationObserver(function () { if (!montado) montar(); }).observe(pares, { childList: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (medir()) { normalizar(); atualizar(); } }).observe(pares);
+    window.addEventListener('resize', function () { if (medir()) { normalizar(); atualizar(); } });
+    if (pares.children.length) montar();
   })();
 })();
