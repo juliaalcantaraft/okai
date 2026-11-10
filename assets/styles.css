@@ -398,3 +398,60 @@ a{color:var(--marrom-texto)}
 select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-ferramentas input,.hoteis-ferramentas select{border-color:#D9C6C2;border-radius:0;background:#fff}
 .chat-abrir{background:#6B2230;border-radius:999px}
 .msg-eu{background:var(--marrom)}
+
+/* ===== Visual roots chique, inspirado em Trancoso ===== */
+:root{--marrom:#A8593A;--marrom-texto:#8A4A2B;--titulo:#4A2E1E;--creme:#F7F1E7;--escuro:#3B2A20;--linha:#E2D4BF;--suave:#8C7A66;--oliva:#5F6B47;--oliva-claro:#E3E2CF;--branco:#FFFCF7}
+body{background:var(--creme);color:var(--escuro)}
+::selection{background:var(--oliva-claro)}
+a{color:var(--marrom-texto)}
+
+/* Fundo de linho bem sutil */
+.areia{background:var(--creme)}
+.areia::before{display:block;content:"";position:absolute;inset:0;z-index:0;background:url(img/linho.jpg) repeat center/512px 512px;opacity:.6;pointer-events:none}
+
+/* Menu cor de cal, texto terroso */
+.menu{background:rgba(250,245,236,.96);border-bottom:1px solid var(--linha)}
+.menu-frase,.menu-frase:hover{color:var(--titulo)}
+.menu .menu-links a,.menu .menu-links a:hover,.menu .menu-links a[aria-current],.menu .menu-links a[aria-current]:hover{color:var(--escuro)}
+.menu .menu-links a.ativa{color:var(--marrom);border-bottom-color:var(--marrom);font-weight:600}
+
+/* Títulos terrosos com um pequeno arco de ornamento */
+.secao h2,.cidade-topo h2{color:var(--titulo)}
+.secao>.secao-topo::after{display:block;content:"";width:26px;height:13px;border:1.5px solid var(--oliva);border-bottom:0;border-radius:26px 26px 0 0;margin-top:6px;background:none}
+.lide{color:var(--suave)}
+.cartao h3,.comece-item h3,.par h3,.quiz-rotulo,.plano-res h3{color:var(--titulo)}
+
+/* Botões terracota cheios, como cerâmica */
+.botao{background:var(--marrom);color:#FBF4E8;border-color:var(--marrom)}
+.botao:hover{background:var(--marrom-texto);border-color:var(--marrom-texto);color:#fff}
+.botao-claro{background:transparent;color:var(--marrom-texto);border-color:var(--marrom)}
+.botao-claro:hover{background:var(--oliva-claro);color:var(--escuro);border-color:var(--oliva)}
+.comece-item{border-color:var(--linha);background:var(--branco);color:var(--escuro)}
+.comece-item svg{stroke:var(--oliva)}
+.comece-item:hover{background:var(--oliva);border-color:var(--oliva);color:#fff}
+.seta{border-color:var(--marrom);color:var(--marrom)}.seta:hover{background:var(--marrom);color:#fff}
+.busca,.busca button{border-radius:999px}.busca button{background:var(--marrom)}
+
+/* Fotos em arco: a assinatura do estilo, e a forma da oca */
+.foto-vertical{border-radius:999px 999px 6px 6px / 42% 42% 6px 6px}
+.foto-vertical figcaption{border-radius:999px;background:rgba(59,42,32,.55);padding:4px 14px}
+.par-fotos{gap:8px}
+.par-fotos img{border-radius:999px 999px 4px 4px / 46% 46% 4px 4px;outline:none}
+.hero-fotos .painel img{filter:saturate(.92) sepia(.07)}
+.hero-fotos .painel::after{background:rgba(59,34,20,.6)}.hero-fotos .painel.ativo::after{background:rgba(59,34,20,.36)}
+.hero h1{color:#FBF4E8}.hero-oca{color:#E7C7A4}
+.hero-legenda,.hero-pausa{border-radius:999px}
+
+/* Detalhes em verde-oliva da mata */
+.barra i,.qp-barra span{background:var(--oliva)}
+.pilha .pos{background:var(--oliva)}
+.jelly-chip{border-color:var(--linha)}.jelly-chip:has(input:checked){background:var(--oliva);border-color:var(--oliva);color:#fff}
+.selo-real{background:var(--oliva-claro);color:#3E4630}.selo-sim{background:#F3E1D2;color:#7A3F22}
+select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-ferramentas input,.hoteis-ferramentas select{border-color:#D8C7AF;background:#FFFCF7;border-radius:8px}
+
+/* Sobre nós em verde-oliva */
+.secao-nome{background:var(--oliva);color:#F4EFE2}
+.secao-nome h2{color:#FBF4E8}
+.duas-colunas p{color:#F1ECDD}.duas-colunas p.fonte{color:#D3D2BD}.duas-colunas h3{color:#FBF4E8}
+.rodape{background:#3B2A20}
+.chat-abrir{background:var(--marrom)}.chat-topo{background:var(--escuro)}.msg-eu{background:var(--marrom)}
