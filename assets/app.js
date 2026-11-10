@@ -814,13 +814,12 @@
     document.getElementById('planoDestino').placeholder = 'Selecione aqui';
     document.getElementById('avalDestino').placeholder = 'Selecione aqui';
   })();
-    /* Menu: sem a bolinha (meia lua), só o traço embaixo do item ativo */
+   /* Menu: sem meia lua, só o traço reto embaixo do item ativo */
   (function () {
     var st = document.createElement('style');
     st.textContent =
-      '.menu-bola{display:none !important}' +
-      '.menu-links a{background:none !important;box-shadow:none !important}' +
-      '.menu-links a[aria-current]{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:8px}';
+      '.menu-links a{border-radius:0 !important;background:none !important;box-shadow:none !important}' +
+      '.menu-links a[aria-current],.menu-links a[aria-current]:hover,.menu-links a[aria-current]:focus,.menu-links a[aria-current]:focus-visible{outline:none !important;text-decoration:underline !important;text-decoration-thickness:2px !important;text-underline-offset:8px !important}';
     document.head.appendChild(st);
   })();
 })();
