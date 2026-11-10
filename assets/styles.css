@@ -336,3 +336,65 @@ select,textarea,.hoteis-ferramentas input,.hoteis-ferramentas select,.chat-form 
 #vistaModerar{padding-bottom:96px}#modEntrar{flex-direction:row;align-items:flex-end}#modEntrar[hidden]{display:none}
 .aval-opcoes{display:flex;gap:24px}.aval-opcoes label{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer}.aval-opcoes input{width:20px;height:20px;accent-color:var(--marrom)}
 #avalPerfil{min-height:44px}
+
+/* ===== Estética nova: vinho, editorial, sem caixas ===== */
+:root{--marrom:#7A2433;--marrom-texto:#6B2230;--titulo:#7A2433;--creme:#FAF7F4;--escuro:#2A1A1D;--linha:#E8DDDA;--suave:#9B8A8E;--branco:#FFFFFF}
+body{background:var(--creme);color:var(--escuro)}
+a{color:var(--marrom-texto)}
+
+/* Fundo liso, sem textura de areia */
+.areia{background:var(--creme);padding:0 clamp(20px,6vw,96px) 120px}
+.areia::before{display:none}
+
+/* Menu vinho, links em maiúsculas espaçadas */
+.menu{background:#6B2230;border-bottom:0;padding-top:16px;padding-bottom:16px;backdrop-filter:none}
+.menu-frase,.menu-frase:hover{color:#F6E7D6;font-family:var(--serifa);font-style:italic;font-weight:300;font-size:20px}
+.menu-links{gap:0 30px}
+.menu .menu-links a,.menu .menu-links a:hover,.menu .menu-links a[aria-current],.menu .menu-links a[aria-current]:hover{color:#fff;font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase}
+.menu .menu-links a:hover{opacity:.75}
+
+/* Títulos grandes e finos, subtítulo pequeno espaçado */
+.secao{margin-bottom:140px;gap:36px}
+.secao>.secao-topo{padding-top:120px;gap:16px}
+.secao>.secao-topo::after{display:none}
+.secao h2,.cidade-topo h2{font-size:clamp(44px,6.4vw,92px);font-weight:300;line-height:1;letter-spacing:-.025em;color:var(--titulo)}
+.lide{font-size:13px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--suave);max-width:640px;line-height:1.8}
+.cartao h3,.comece-item h3,.par h3,.quiz-rotulo,.plano-res h3{font-weight:300;font-size:26px;color:var(--titulo)}
+
+/* Sem caixas: só uma linha fina separando */
+.cartao,.filtros,.nota-painel,.etiquetas-origem,details.como,.par{background:transparent;border:0;border-top:1px solid var(--linha);border-radius:0;padding:32px 0}
+.filtros{padding:24px 0}.nota-painel{padding:18px 0}
+.cartao.aval-form,.aval-saida{padding-right:8px}
+.par{border-top:0;padding:0}.par-texto{padding:18px 0 0}.par p{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--suave)}
+.cidade-topo{padding:64px 0 0}
+
+/* Botões só com contorno, como na CME */
+.botao,.botao-claro{background:transparent;color:var(--marrom);border:1px solid var(--marrom);border-radius:999px;font-size:12px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;padding:0 30px;min-height:46px}
+.botao:hover,.botao-claro:hover{background:var(--marrom);color:#fff}
+.leaflet-popup-content a.botao{color:var(--marrom)}.leaflet-popup-content a.botao:hover{color:#fff}
+.voltar{letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+.seta{border-radius:50%}
+
+/* Fotos grandes */
+.par-fotos{height:280px}.par-fotos img{height:280px}
+.par{flex:0 0 min(440px,86%)}
+.foto-vertical{min-height:540px;border-radius:0}
+.mapa{border-radius:0;height:min(78vh,720px)}
+@media (min-width:821px){.carrossel .seta{margin-top:118px !important}}
+@media (max-width:820px){.foto-vertical{min-height:380px}.par-fotos,.par-fotos img{height:220px}}
+
+/* Sobre nós em vinho, texto grande */
+.secao-nome{background:#6B2230;color:#F6E7D6;border-top:0;padding:clamp(80px,11vw,160px) clamp(20px,6vw,96px)}
+.secao-nome h2{color:#F6E7D6;font-weight:300;font-size:clamp(56px,9vw,132px);letter-spacing:-.03em}
+.duas-colunas p{color:#F6E7D6;font-size:20px;font-weight:300}.duas-colunas p.fonte{color:#D9B9B2;font-size:13px;letter-spacing:.06em}
+.duas-colunas h3{font-family:var(--serifa);font-weight:300;font-style:italic;font-size:28px;color:#fff}
+
+/* Detalhes */
+.comece-item{background:transparent;border:1px solid var(--marrom);border-radius:999px;color:var(--marrom);letter-spacing:.12em;text-transform:uppercase;font-size:13px}
+.comece-item:hover{background:var(--marrom);color:#fff}.comece-item:hover svg{stroke:#fff}.comece-item svg{stroke:var(--marrom)}
+.jelly-chip{border-color:#D9C6C2}.jelly-chip:has(input:checked){background:var(--marrom);border-color:var(--marrom)}
+.qp-barra span{background:var(--marrom)}
+.selo-real{background:#EFE3DF;color:#5A1B27}.selo-sim{background:#F6E3E0;color:#7A2433}
+select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-ferramentas input,.hoteis-ferramentas select{border-color:#D9C6C2;border-radius:0;background:#fff}
+.chat-abrir{background:#6B2230;border-radius:999px}
+.msg-eu{background:var(--marrom)}
