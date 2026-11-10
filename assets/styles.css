@@ -422,4 +422,14 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 .areia::before{display:block !important;content:"";position:absolute;inset:0;z-index:0;background:url(img/areia.jpg) repeat-y top center/100% auto;opacity:.16;pointer-events:none}
 @media (max-width:820px){.areia::before{background-size:200% auto}}
 
-
+/* Fundo com xadrez clarinho, bem suave */
+.areia{
+  background-color:#FAF7F4 !important;
+  background-image:
+    linear-gradient(rgba(122,36,51,.045) 50%,transparent 50%),
+    linear-gradient(90deg,rgba(122,36,51,.045) 50%,transparent 50%) !important;
+  background-size:56px 56px !important;
+  background-repeat:repeat !important;
+  background-position:0 0 !important;
+}
+.areia::before{display:none !important}
