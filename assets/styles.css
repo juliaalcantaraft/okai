@@ -417,3 +417,7 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 .chat-topo{background:#6B2230}
 @media (max-width:820px){.chat-abrir{padding:16px 9px;font-size:12px}}
 @media (prefers-reduced-motion:reduce){.chat-painel{animation:none}.chat-abrir{transition:none}}
+
+/* Textura de areia de volta no fundo */
+.areia::before{display:block !important;content:"";position:absolute;inset:0;z-index:0;background:url(img/areia.jpg) repeat-y top center/100% auto;opacity:.16;pointer-events:none}
+@media (max-width:820px){.areia::before{background-size:200% auto}}
