@@ -273,6 +273,7 @@
   var areia = document.querySelector('#vistaInicio > .areia');
   var menu = document.querySelector('.menu');
   var hero = document.querySelector('.hero');
+  var rodape = document.querySelector('.rodape');
 
   // põe a barra no topo da página, acima da foto grande, e ela acompanha a rolagem
   document.body.insertBefore(menu, document.querySelector('.pular').nextSibling);
@@ -282,6 +283,7 @@
     var emInicio = (h === '' || h === 'inicio');
 
     if (ESCONDER_HERO_FORA_DO_INICIO) hero.classList.toggle('aba-oculta', !emInicio);
+    rodape.classList.toggle('aba-oculta', !emInicio);   // créditos só na página inicial
 
     document.querySelectorAll('.menu-links a').forEach(function (a) {
       a.classList.toggle('ativa', a.getAttribute('href') === '#' + (h || 'inicio'));
