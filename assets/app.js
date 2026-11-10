@@ -854,19 +854,69 @@
   })();
    /* Menu: "Gostou de lá?" vira "Sem passaporte" */
   document.querySelector('.menu-links a[href="#gostou"]').textContent = 'Sem passaporte';
-    /* Antes de ir: sempre começa vazio (sem destino, sem mês, sem resultado) */
+    /* Todas as abas começam do zero toda vez que você entra nelas */
   (function () {
-    function limpar() {
-      var dest = document.getElementById('planoDestino'), mes = document.getElementById('planoMes'), saida = document.getElementById('planoSaida');
-      dest.value = '';
-      mes.selectedIndex = 0;
-      saida.innerHTML = '';
+    var $i = function (id) { return document.getElementById(id); };
+    var evento = function (el, nome) { el.dispatchEvent(new Event(nome, { bubbles: true })); };
+
+    function limparAntes() {
+      $i('planoDestino').value = '';
+      $i('planoMes').selectedIndex = 0;
+      $i('planoSaida').innerHTML = '';
+      document.querySelectorAll('#checklist input').forEach(function (c) { c.checked = false; });
+      try { localStorage.removeItem('okai-checklist'); } catch (e) { }
     }
+
+    function limparGostou() {
+      $i('quizLugar').selectedIndex = 0;
+      $i('quizResultado').innerHTML = '';
+      $i('quiz').querySelector('button[type="submit"]').style.display = '';
+      $i('fotoDestino').src = 'assets/img/fervedouro.jpg';
+      $i('fotoDestino').alt = 'Mulher nadando na água azul-clara de um fervedouro, cercado de vegetação';
+      $i('fotoLegenda').textContent = 'Fervedouro, Jalapão, TO';
+    }
+
+    function limparAval() {
+      $i('avalForm').reset();
+      $i('avalDestino').value = '';
+      $i('avalPerfil').selectedIndex = 0;
+      $i('avalErro').textContent = '';
+      $i('avalErro').hidden = true;
+      document.querySelectorAll('#avalForm [aria-invalid]').forEach(function (x) { x.removeAttribute('aria-invalid'); });
+      $i('demoResultado').innerHTML = '<p class="nota">Envie sua avaliação para ver a análise.</p>';
+    }
+
+    function limparPerfil() {
+      var capa = $i('qpCapa'), corpo = $i('qpCorpo');
+      if (capa && corpo) {
+        $i('quizPerfil').reset();
+        corpo.hidden = true; capa.hidden = false;
+        capa.querySelector('.qp-capa-texto').innerHTML = '<strong>Seis perguntas, uma de cada vez.</strong><span>Leva menos de um minuto.</span>';
+        $i('qpComecarTexto').textContent = 'Descobrir meu perfil';
+      }
+      $i('perfilResultado').innerHTML = '';
+    }
+
+    function limparMapa() {
+      $i('filtroRelatos').checked = false;
+      $i('filtroTipo').value = 't';
+      $i('filtroUf').value = '';
+      $i('filtroRegiao').value = '';
+      evento($i('filtroRegiao'), 'change');
+    }
+
+    var porAba = { '#antes': limparAntes, '#gostou': limparGostou, '#/avaliacao': limparAval, '#perfil': limparPerfil, '#mapa': limparMapa };
+
     window.addEventListener('hashchange', function () {
-      if (location.hash === '#antes') setTimeout(limpar, 0);   // roda depois do app.js ter preenchido
+      var f = porAba[location.hash];
+      if (f) setTimeout(f, 0);   // roda depois do app.js ter preenchido os campos
     });
-    var espera = setInterval(function () {                     // limpa uma vez quando a página termina de carregar
-      if (window.__okai) { clearInterval(espera); limpar(); }
+
+    var espera = setInterval(function () {   // limpa tudo uma vez quando a página termina de carregar
+      if (window.__okai) {
+        clearInterval(espera);
+        limparAntes(); limparGostou(); limparAval(); limparPerfil(); $i('busca').value = '';
+      }
     }, 100);
     setTimeout(function () { clearInterval(espera); }, 10000);
   })();
