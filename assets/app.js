@@ -844,4 +844,12 @@
     st.textContent = '#quizResultado>div{border-top:0 !important}';
     document.head.appendChild(st);
   })();
+   /* Menu: nova ordem dos itens */
+  (function () {
+    var box = document.querySelector('.menu-links');
+    ['#inicio', '#mapa', '#perfil', '#antes', '#gostou', '#/avaliacao', '#/salvos', '#sobre'].forEach(function (href) {
+      var a = box.querySelector('a[href="' + href + '"]');
+      if (a) box.appendChild(a);
+    });
+  })();
 })();
