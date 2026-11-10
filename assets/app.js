@@ -800,7 +800,7 @@
     // Antes de ir: mês
     var mes = document.getElementById('planoMes'), saida = document.getElementById('planoSaida');
     function conferirMes() {
-      if (mes.value === '' && saida.querySelector('.plano-res')) saida.innerHTML = '<p class="nota">Escolha o mês da viagem.</p>';
+      if (mes.value === '' && saida.querySelector('.plano-res')) saida.innerHTML = '';
     }
     observar(mes, conferirMes);
     new MutationObserver(conferirMes).observe(saida, { childList: true });
