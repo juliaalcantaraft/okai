@@ -854,4 +854,20 @@
   })();
    /* Menu: "Gostou de lá?" vira "Sem passaporte" */
   document.querySelector('.menu-links a[href="#gostou"]').textContent = 'Sem passaporte';
+    /* Antes de ir: sempre começa vazio (sem destino, sem mês, sem resultado) */
+  (function () {
+    function limpar() {
+      var dest = document.getElementById('planoDestino'), mes = document.getElementById('planoMes'), saida = document.getElementById('planoSaida');
+      dest.value = '';
+      mes.selectedIndex = 0;
+      saida.innerHTML = '';
+    }
+    window.addEventListener('hashchange', function () {
+      if (location.hash === '#antes') setTimeout(limpar, 0);   // roda depois do app.js ter preenchido
+    });
+    var espera = setInterval(function () {                     // limpa uma vez quando a página termina de carregar
+      if (window.__okai) { clearInterval(espera); limpar(); }
+    }, 100);
+    setTimeout(function () { clearInterval(espera); }, 10000);
+  })();
 })();
