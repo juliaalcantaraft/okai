@@ -258,5 +258,41 @@
 
 <script src="assets/vendor/leaflet.js"></script>
 <script src="assets/app.js"></script>
+  <style>
+  .aba-oculta { display: none !important; }
+  .menu-links a.ativa { font-weight: 700; border-bottom: 2px solid currentColor; }
+</style>
+<script>
+(function () {
+  var secoes = ['comece', 'mapa', 'perfil', 'gostou', 'antes', 'sobre'];
+  var alias = { inicio: 'comece', comece: 'comece', mapa: 'mapa', perfil: 'perfil',
+                gostou: 'gostou', antes: 'antes', sobre: 'sobre' };
+  var areia = document.querySelector('#vistaInicio > .areia');
+  var menu = document.querySelector('.menu');
+
+  function mostrar(rolar) {
+    var h = location.hash.replace('#', '');
+    if (h.charAt(0) === '/') return;              // rotas internas (#/avaliacao, #/salvos...) ficam com o seu app.js
+    var alvo = alias[h] || 'comece';
+
+    secoes.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('aba-oculta', id !== alvo);
+    });
+    areia.classList.toggle('aba-oculta', alvo === 'sobre');
+
+    document.querySelectorAll('.menu-links a').forEach(function (a) {
+      var href = a.getAttribute('href');
+      a.classList.toggle('ativa', href === '#' + (h || 'inicio'));
+    });
+
+    if (alvo === 'mapa') setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 50); // o mapa redesenha direito
+    if (rolar && h !== 'inicio') menu.scrollIntoView();
+  }
+
+  window.addEventListener('hashchange', function () { mostrar(true); });
+  mostrar(false);
+})();
+</script>
 </body>
 </html>
