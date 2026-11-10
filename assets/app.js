@@ -852,4 +852,6 @@
       if (a) box.appendChild(a);
     });
   })();
+   /* Menu: "Gostou de lá?" vira "Sem passaporte" */
+  document.querySelector('.menu-links a[href="#gostou"]').textContent = 'Sem passaporte';
 })();
