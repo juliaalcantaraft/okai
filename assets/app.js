@@ -1062,4 +1062,11 @@
     window.addEventListener('hashchange', function () { setTimeout(ajustar, 0); });
     ajustar();
   })();
+    /* Nomes do grupo em ordem alfabética (Sobre nós e rodapé) */
+  (function () {
+    var nomes = 'Alicia Pizoni, Giovana Couto, Júlia Ferraz, Rebeca Bertozzi e Sofia Bastos';
+    document.querySelectorAll('.rodape-nomes, #sobre .fonte').forEach(function (el) {
+      if (el.textContent.indexOf('Júlia Ferraz') >= 0) el.textContent = nomes;
+    });
+  })();
 })();
