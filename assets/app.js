@@ -763,7 +763,7 @@
       var h = location.hash.replace('#', '');
       var emInicio = (h === '' || h === 'inicio');
       if (ESCONDER_HERO_FORA_DO_INICIO) heroEl.classList.toggle('aba-oculta', !emInicio);
-      rodape.classList.toggle('aba-oculta', !emInicio);
+      rodape.classList.toggle('aba-oculta', !(emInicio || h === 'sobre'));
       if (h.charAt(0) === '/') { if (rolar) window.scrollTo(0, 0); return; }
       var alvo = alias[h] || 'comece';
       secoes.forEach(function (id) {
