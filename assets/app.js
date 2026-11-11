@@ -1051,4 +1051,15 @@
     ic.href = 'data:image/svg+xml,' + encodeURIComponent(svg);
     document.head.appendChild(ic);
   })();
+    /* Rodapé (créditos): aparece só em Início e em Sobre nós */
+  (function () {
+    var rodape = document.querySelector('.rodape');
+    function ajustar() {
+      var h = location.hash.replace('#', '');
+      var visivel = (h === '' || h === 'inicio' || h === 'comece' || h === 'sobre');
+      rodape.classList.toggle('aba-oculta', !visivel);
+    }
+    window.addEventListener('hashchange', function () { setTimeout(ajustar, 0); });
+    ajustar();
+  })();
 })();
