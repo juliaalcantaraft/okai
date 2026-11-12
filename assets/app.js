@@ -1069,4 +1069,105 @@
       if (el.textContent.indexOf('Júlia Ferraz') >= 0) el.textContent = nomes;
     });
   })();
+    /* Temas do site: botão "Temas" no final do menu */
+  (function () {
+    var TEMAS = [
+      { id: 'okai', nome: 'Okaí (padrão)', d: '#7A2433', a: '#EFA6B5' },
+      { id: 'natal', nome: 'Natal', d: '#1E4B38', a: '#B3262E', bg: '#FBF8F2', txt: '#1F2A24', lin: '#DDE3D6', sv: '#6F8277', land: '#E6E8DA', water: '#F4F6EF', fx: { c: ['❄', '❅', '❆'], cor: ['#A9C2B2'], t: 'cai' } },
+      { id: 'halloween', nome: 'Halloween', d: '#2B1A33', a: '#E8742A', bg: '#F7F1E8', txt: '#231629', lin: '#E3D6D0', sv: '#85708C', land: '#EADFD2', water: '#F4EDE3', fx: { c: ['🦇', '🎃', '✦'], cor: ['#E8742A'], t: 'cai' } },
+      { id: 'carnaval', nome: 'Carnaval', d: '#4A1D7A', a: '#F59E0B', bg: '#FFF9F0', txt: '#2A1640', lin: '#EADCF0', sv: '#8A6FA3', land: '#F1E3D6', water: '#FBF3EA', fx: { c: ['●', '■', '▲', '◆'], cor: ['#F59E0B', '#E11D74', '#14A38B', '#4A1D7A'], t: 'cai' } },
+      { id: 'namorados', nome: 'Dia dos Namorados', d: '#8E1B3A', a: '#F28BA8', bg: '#FFF7F6', txt: '#3A1620', lin: '#F1D9DA', sv: '#A66A78', land: '#F3DEDA', water: '#FCF1EF', fx: { c: ['♥', '♡'], cor: ['#E58AA3'], t: 'cai' } },
+      { id: 'reveillon', nome: 'Réveillon', d: '#14213D', a: '#D4AF37', bg: '#F8F6F0', txt: '#141B2D', lin: '#DDDCD2', sv: '#6B7388', land: '#E7E4D8', water: '#F2F0E8', fx: { c: ['✦', '✧'], cor: ['#D4AF37'], t: 'cai' } },
+      { id: 'junina', nome: 'Festa Junina', d: '#8A3B12', a: '#E6A817', bg: '#FFF8EC', txt: '#3A2312', lin: '#EBD9BE', sv: '#9A7B55', land: '#F0DFC2', water: '#FAF0DD', fx: { c: ['▼', '◆'], cor: ['#C8451B', '#E6A817', '#2F7D4F'], t: 'cai' } },
+      { id: 'verao', nome: 'Verão', d: '#0E5A6B', a: '#FF7A59', bg: '#FAFAF5', txt: '#11323A', lin: '#D6E4E3', sv: '#5F8A91', land: '#EFE6D0', water: '#E3F1F1', fx: { c: ['○', '◦'], cor: ['#6FB7BF'], t: 'sobe' } },
+      { id: 'mulher', nome: 'Dia da Mulher', d: '#4B2E83', a: '#D88AC0', bg: '#FBF7FC', txt: '#25163A', lin: '#E6DCEE', sv: '#8C77A6', land: '#EDE3EE', water: '#F6F0F8', fx: { c: ['✿', '❀'], cor: ['#B58AD0'], t: 'cai' } },
+      { id: 'primavera', nome: 'Primavera', d: '#3F6B4E', a: '#E87EA1', bg: '#FAFBF5', txt: '#1F2D24', lin: '#DCE5D3', sv: '#7C957F', land: '#E5EBD8', water: '#F3F7EC', fx: { c: ['✿', '❀'], cor: ['#E8A0B8'], t: 'cai' } }
+    ];
+
+    /* estilos */
+    var css = [
+      'body[data-tema] .menu,body[data-tema] .secao-nome,body[data-tema] .chat-abrir,body[data-tema] .chat-topo{background:var(--d) !important}',
+      'body[data-tema] .msg-eu{background:var(--d)}',
+      'body[data-tema] .oca-pin{color:var(--d) !important}',
+      'body[data-tema] .oca-pin.destaque{color:var(--a) !important}',
+      'body[data-tema] .leaflet-overlay-pane path{fill:var(--land) !important;stroke:var(--d) !important;stroke-opacity:.4 !important}',
+      'body[data-tema] .mapa,body[data-tema] .leaflet-container{background:var(--water) !important}',
+      'body[data-tema] .chave-lista{background:var(--d)}body[data-tema] .chave-relato{background:var(--a)}',
+      '.tema-caixa{position:relative;display:flex;align-items:center;margin-left:6px}',
+      '.tema-botao{min-height:36px;padding:0 16px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.55);border-radius:999px;font:inherit;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}',
+      '.tema-botao:hover{background:rgba(255,255,255,.14)}',
+      '.tema-lista{position:absolute;right:0;top:calc(100% + 10px);z-index:3000;width:250px;margin:0;padding:8px;list-style:none;background:#fff;border:1px solid var(--linha);box-shadow:0 14px 36px rgba(30,18,12,.22)}',
+      '.tema-lista[hidden]{display:none}',
+      '.tema-lista button{width:100%;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;background:none;border:0;font:inherit;font-size:15px;color:#2A1A1D;text-align:left;cursor:pointer}',
+      '.tema-lista button:hover{background:#F6F1EC}',
+      '.tema-lista button[aria-checked="true"]{font-weight:600}',
+      '.tema-lista button[aria-checked="true"]::after{content:"✓";margin-left:auto}',
+      '.tema-bolas{display:inline-flex}.tema-bolas i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}.tema-bolas i+i{margin-left:-6px}',
+      '.tema-fx{position:fixed;inset:0;z-index:800;pointer-events:none;overflow:hidden}',
+      '.tema-fx span{position:absolute;top:0;opacity:.5;will-change:transform;animation-timing-function:linear;animation-iteration-count:infinite}',
+      '@keyframes tema-cai{from{transform:translate3d(0,-8vh,0) rotate(0)}to{transform:translate3d(var(--dx),108vh,0) rotate(360deg)}}',
+      '@keyframes tema-sobe{from{transform:translate3d(0,108vh,0)}to{transform:translate3d(var(--dx),-10vh,0)}}'
+    ];
+    TEMAS.forEach(function (t) {
+      if (t.id === 'okai') return;
+      css.push('body[data-tema="' + t.id + '"]{--d:' + t.d + ';--a:' + t.a + ';--marrom:' + t.d + ';--marrom-texto:' + t.d + ';--titulo:' + t.d + ';--creme:' + t.bg + ';--escuro:' + t.txt + ';--linha:' + t.lin + ';--suave:' + t.sv + ';--land:' + t.land + ';--water:' + t.water + '}');
+    });
+    var st = document.createElement('style');
+    st.textContent = css.join('');
+    document.head.appendChild(st);
+
+    /* botão e lista no final do menu */
+    var links = document.querySelector('.menu-links');
+    var caixa = document.createElement('div'); caixa.className = 'tema-caixa';
+    var botao = document.createElement('button'); botao.type = 'button'; botao.className = 'tema-botao';
+    botao.textContent = 'Temas'; botao.setAttribute('aria-haspopup', 'true'); botao.setAttribute('aria-expanded', 'false');
+    var lista = document.createElement('ul'); lista.className = 'tema-lista'; lista.hidden = true; lista.setAttribute('role', 'menu');
+    TEMAS.forEach(function (t) {
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button" role="menuitemradio" aria-checked="false" data-tema="' + t.id + '"><span class="tema-bolas"><i style="background:' + t.d + '"></i><i style="background:' + t.a + '"></i></span>' + t.nome + '</button>';
+      lista.appendChild(li);
+    });
+    caixa.appendChild(botao); caixa.appendChild(lista); links.appendChild(caixa);
+
+    function abrir(sim) { lista.hidden = !sim; botao.setAttribute('aria-expanded', sim ? 'true' : 'false'); }
+    botao.addEventListener('click', function (e) { e.stopPropagation(); abrir(lista.hidden); });
+    document.addEventListener('click', function (e) { if (!caixa.contains(e.target)) abrir(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { abrir(false); botao.focus(); } });
+
+    /* efeito de fundo (flocos, corações, confete...) */
+    var fxBox = document.createElement('div'); fxBox.className = 'tema-fx'; fxBox.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(fxBox);
+    var reduz = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function efeito(t) {
+      fxBox.innerHTML = '';
+      if (!t.fx || reduz) return;
+      for (var i = 0; i < 22; i++) {
+        var s = document.createElement('span');
+        s.textContent = t.fx.c[i % t.fx.c.length];
+        s.style.left = (Math.random() * 100) + '%';
+        s.style.fontSize = (12 + Math.random() * 12) + 'px';
+        s.style.color = t.fx.cor[i % t.fx.cor.length];
+        s.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+        s.style.animationName = t.fx.t === 'sobe' ? 'tema-sobe' : 'tema-cai';
+        s.style.animationDuration = (14 + Math.random() * 14) + 's';
+        s.style.animationDelay = '-' + (Math.random() * 24) + 's';
+        fxBox.appendChild(s);
+      }
+    }
+
+    /* aplicar tema */
+    function aplicar(id, salvar) {
+      var t = TEMAS.filter(function (x) { return x.id === id; })[0] || TEMAS[0];
+      if (t.id === 'okai') document.body.removeAttribute('data-tema'); else document.body.setAttribute('data-tema', t.id);
+      lista.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.tema === t.id ? 'true' : 'false'); });
+      efeito(t);
+      if (salvar) { try { localStorage.setItem('okai-tema', t.id); } catch (e) { } }
+    }
+    lista.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-tema]'); if (!b) return;
+      aplicar(b.dataset.tema, true); abrir(false);
+    });
+    var salvo = 'okai'; try { salvo = localStorage.getItem('okai-tema') || 'okai'; } catch (e) { }
+    aplicar(salvo, false);
+  })();
 })();
