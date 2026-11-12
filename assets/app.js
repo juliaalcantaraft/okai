@@ -1170,4 +1170,35 @@
     var salvo = 'okai'; try { salvo = localStorage.getItem('okai-tema') || 'okai'; } catch (e) { }
     aplicar(salvo, false);
   })();
+    /* Temas: mais personalidade em cada um */
+  (function () {
+    var T = {
+      natal:     { g: '❄', c: '#1E4B38', faixa: 'repeating-linear-gradient(135deg,#B3262E 0 14px,#FBF8F2 14px 28px,#1E4B38 28px 42px)', tit: 'font-style:italic;font-weight:300', raio: '999px', orn: '❄' },
+      halloween: { g: '🦇', c: '#2B1A33', faixa: 'repeating-linear-gradient(90deg,#E8742A 0 18px,#2B1A33 18px 36px)', tit: 'text-transform:uppercase;letter-spacing:.04em;font-weight:400', raio: '0', orn: '🎃' },
+      carnaval:  { g: '●', c: '#E11D74', faixa: 'linear-gradient(90deg,#F59E0B,#E11D74,#14A38B,#4A1D7A,#F59E0B)', tit: 'font-weight:600;letter-spacing:-.03em', raio: '18px', orn: '✦' },
+      namorados: { g: '♥', c: '#E58AA3', faixa: 'repeating-linear-gradient(90deg,#8E1B3A 0 10px,#F28BA8 10px 20px)', tit: 'font-style:italic;font-weight:300', raio: '999px', orn: '♥' },
+      reveillon: { g: '✦', c: '#D4AF37', faixa: 'linear-gradient(90deg,#D4AF37,#F3E3A0,#D4AF37)', tit: 'text-transform:uppercase;letter-spacing:.12em;font-weight:300', raio: '0', orn: '✦' },
+      junina:    { g: '▼', c: '#C8451B', faixa: 'repeating-linear-gradient(90deg,#C8451B 0 16px,#E6A817 16px 32px,#2F7D4F 32px 48px)', tit: 'font-weight:600;letter-spacing:-.02em', raio: '6px', orn: '▼' },
+      verao:     { g: '○', c: '#0E5A6B', faixa: 'linear-gradient(90deg,#0E5A6B,#6FB7BF,#FF7A59)', tit: 'font-weight:500;letter-spacing:-.02em', raio: '999px', orn: '☀' },
+      mulher:    { g: '✿', c: '#B58AD0', faixa: 'linear-gradient(90deg,#4B2E83,#D88AC0,#4B2E83)', tit: 'font-style:italic;font-weight:300', raio: '999px', orn: '♀' },
+      primavera: { g: '✿', c: '#E8A0B8', faixa: 'linear-gradient(90deg,#3F6B4E,#E87EA1,#3F6B4E)', tit: 'font-style:italic;font-weight:300', raio: '999px', orn: '✿' }
+    };
+    var css = [
+      'body[data-tema] .hero-fotos .painel::after{background:color-mix(in srgb,var(--d) 72%,transparent)}',
+      'body[data-tema] .hero-fotos .painel.ativo::after{background:color-mix(in srgb,var(--d) 42%,transparent)}',
+      'body[data-tema]::after{content:"";position:fixed;inset:0;z-index:790;pointer-events:none;opacity:.07}'
+    ];
+    Object.keys(T).forEach(function (id) {
+      var t = T[id], s = 'body[data-tema="' + id + '"]';
+      var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><text x='18' y='44' font-size='24' fill='" + t.c + "'>" + t.g + "</text><text x='88' y='108' font-size='17' fill='" + t.c + "'>" + t.g + "</text></svg>";
+      css.push(s + '::after{background-image:url("data:image/svg+xml,' + encodeURIComponent(svg) + '")}');
+      css.push(s + ' .menu{border-style:solid !important;border-width:0 0 5px !important;border-image:' + t.faixa + ' 1 !important}');
+      css.push(s + ' .secao h2,' + s + ' .cidade-topo h2,' + s + ' .secao-nome h2{' + t.tit + '}');
+      css.push(s + ' .botao,' + s + ' .botao-claro,' + s + ' .comece-item{border-radius:' + t.raio + ' !important}');
+      css.push(s + ' .menu-frase::after{content:" ' + t.orn + '";font-style:normal}');
+    });
+    var st = document.createElement('style');
+    st.textContent = css.join('');
+    document.head.appendChild(st);
+  })();
 })();
