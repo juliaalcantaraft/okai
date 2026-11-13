@@ -1412,6 +1412,352 @@
     var salvo = 'pt'; try { salvo = localStorage.getItem('okai-idioma') || 'pt'; } catch (e) { }
     aplicar(NOMES[salvo] ? salvo : 'pt', false);
   })();
+    /* Idiomas, parte 2: quiz, destinos, cidade, planejador, salvos e avaliação */
+  (function () {
+    var D = [
+      /* regiões (usadas nas regras) */
+      ["Norte", "North", "Norte"], ["Nordeste", "Northeast", "Nordeste"], ["Centro-Oeste", "Central-West", "Centro-Oeste"], ["Sudeste", "Southeast", "Sudeste"], ["Sul", "South", "Sur"],
+      /* quiz do perfil */
+      ["O que mais te motiva a viajar agora?", "What motivates you most to travel right now?", "¿Qué es lo que más te motiva a viajar ahora?"],
+      ["Viver experiências autênticas gastando pouco", "Having authentic experiences on a small budget", "Vivir experiencias auténticas gastando poco"],
+      ["Descansar da rotina e aproveitar bem poucos dias", "Resting from the routine and making the most of a few days", "Descansar de la rutina y aprovechar bien pocos días"],
+      ["Começar uma nova fase e ganhar confiança", "Starting a new phase and gaining confidence", "Empezar una nueva etapa y ganar confianza"],
+      ["Chegar a trilhas, montanhas e lugares remotos", "Reaching trails, mountains and remote places", "Llegar a senderos, montañas y lugares remotos"],
+      ["Realizar um sonho adiado, com calma", "Fulfilling a postponed dream, calmly", "Cumplir un sueño aplazado, con calma"],
+      ["Onde você prefere ficar?", "Where do you prefer to stay?", "¿Dónde prefieres alojarte?"],
+      ["Hostel, para economizar e conhecer gente", "A hostel, to save money and meet people", "Hostel, para ahorrar y conocer gente"],
+      ["Hotel boutique, com conforto e praticidade", "A boutique hotel, with comfort and convenience", "Hotel boutique, con comodidad y practicidad"],
+      ["Lugar acolhedor, com retiros ou experiências", "A welcoming place, with retreats or experiences", "Lugar acogedor, con retiros o experiencias"],
+      ["Camping ou pousada perto das trilhas", "Camping or an inn near the trails", "Camping o posada cerca de los senderos"],
+      ["Lugar confortável, acessível e fácil de circular", "A comfortable, accessible place that is easy to get around", "Lugar cómodo, accesible y fácil de recorrer"],
+      ["Como você planeja a viagem?", "How do you plan your trip?", "¿Cómo planeas el viaje?"],
+      ["Com flexibilidade, decidindo pelo caminho", "Flexibly, deciding along the way", "Con flexibilidad, decidiendo en el camino"],
+      ["Com roteiro pronto e tudo resolvido", "With a ready itinerary and everything sorted", "Con itinerario listo y todo resuelto"],
+      ["Começando por destinos fáceis", "Starting with easy destinations", "Empezando por destinos fáciles"],
+      ["Em detalhes: equipamento, clima e logística", "In detail: gear, weather and logistics", "En detalle: equipo, clima y logística"],
+      ["Em ritmo tranquilo, sem correria", "At a relaxed pace, no rush", "A ritmo tranquilo, sin prisas"],
+      ["Qual seria o seu dia perfeito?", "What would your perfect day look like?", "¿Cómo sería tu día perfecto?"],
+      ["Comida de rua e novas amizades", "Street food and new friendships", "Comida callejera y nuevas amistades"],
+      ["Boa gastronomia, cultura e um tour em grupo pequeno", "Good food, culture and a small-group tour", "Buena gastronomía, cultura y un tour en grupo pequeño"],
+      ["Aula de culinária ou experiência de autoconhecimento", "A cooking class or a self-discovery experience", "Clase de cocina o experiencia de autoconocimiento"],
+      ["Trekking e uma vista que dá trabalho para alcançar", "Trekking and a view that takes effort to reach", "Trekking y una vista que cuesta alcanzar"],
+      ["Cidade histórica e conversa com os moradores", "A historic town and conversations with locals", "Ciudad histórica y conversación con los vecinos"],
+      ["O que mais pesa na sua decisão?", "What weighs most in your decision?", "¿Qué pesa más en tu decisión?"],
+      ["Segurança dentro de um orçamento curto", "Safety on a tight budget", "Seguridad con un presupuesto ajustado"],
+      ["Não perder tempo com imprevistos", "Not wasting time on surprises", "No perder tiempo con imprevistos"],
+      ["Me sentir segura e bem recebida desde o início", "Feeling safe and welcome from the start", "Sentirme segura y bien recibida desde el principio"],
+      ["Equipamento, clima e como chegar", "Gear, weather and how to get there", "Equipo, clima y cómo llegar"],
+      ["Saúde, acessibilidade e ritmo", "Health, accessibility and pace", "Salud, accesibilidad y ritmo"],
+      ["Quanto você quer gastar por noite?", "How much do you want to spend per night?", "¿Cuánto quieres gastar por noche?"],
+      ["Até R$ 150 por noite", "Up to R$ 150 per night", "Hasta R$ 150 por noche"],
+      ["De R$ 150 a R$ 350", "From R$ 150 to R$ 350", "De R$ 150 a R$ 350"],
+      ["De R$ 350 a R$ 700", "From R$ 350 to R$ 700", "De R$ 350 a R$ 700"],
+      ["Acima de R$ 700", "Over R$ 700", "Más de R$ 700"],
+      ["Pronto! Veja seu perfil abaixo.", "Done! See your profile below.", "¡Listo! Mira tu perfil abajo."],
+      ["Quer testar outras respostas?", "Want to try other answers?", "¿Quieres probar otras respuestas?"],
+      /* perfis */
+      ["A mochileira de orçamento", "The budget backpacker", "La mochilera de presupuesto"],
+      ["A executiva em pausa", "The executive on a break", "La ejecutiva en pausa"],
+      ["A viajante de recomeço", "The fresh-start traveler", "La viajera de nuevo comienzo"],
+      ["A aventureira de natureza", "The nature adventurer", "La aventurera de la naturaleza"],
+      ["A exploradora da melhor idade", "The golden-age explorer", "La exploradora de la edad dorada"],
+      ["Você viaja com pouco dinheiro e muita flexibilidade. Fica em hostels, come comida de rua, pega voos baratos e faz amizades pelo caminho. Busca liberdade e experiências autênticas, e a segurança é a maior preocupação.", "You travel on little money and lots of flexibility. You stay in hostels, eat street food, take cheap flights and make friends along the way. You look for freedom and authentic experiences, and safety is your biggest concern.", "Viajas con poco dinero y mucha flexibilidad. Te quedas en hostels, comes comida callejera, tomas vuelos baratos y haces amistades por el camino. Buscas libertad y experiencias auténticas, y la seguridad es tu mayor preocupación."],
+      ["Você tem poucas semanas de férias e quer aproveitar ao máximo, sem dor de cabeça. Prefere hotéis boutique, tours em grupo pequeno e roteiros prontos. Busca descanso, gastronomia e cultura, com conforto e eficiência.", "You have only a few weeks of vacation and want to make the most of them, hassle-free. You prefer boutique hotels, small-group tours and ready-made itineraries. You look for rest, food and culture, with comfort and efficiency.", "Tienes pocas semanas de vacaciones y quieres aprovecharlas al máximo, sin dolores de cabeza. Prefieres hoteles boutique, tours en grupo pequeño e itinerarios listos. Buscas descanso, gastronomía y cultura, con comodidad y eficiencia."],
+      ["Você viaja sozinha depois de uma mudança de vida ou no início de uma nova fase. Começa por destinos fáceis e ganha confiança aos poucos. Valoriza retiros, aulas de culinária e experiências de autoconhecimento.", "You travel solo after a life change or at the start of a new phase. You begin with easy destinations and gain confidence little by little. You value retreats, cooking classes and self-discovery experiences.", "Viajas sola después de un cambio de vida o al inicio de una nueva etapa. Empiezas por destinos fáciles y ganas confianza poco a poco. Valoras los retiros, las clases de cocina y las experiencias de autoconocimiento."],
+      ["Você vive atrás de trilhas, montanhas e lugares remotos. Planeja com detalhe, acampa e faz trekking sozinha ou em grupos. Equipamento, clima e logística fazem parte da sua viagem.", "You live for trails, mountains and remote places. You plan in detail, camp and trek alone or in groups. Gear, weather and logistics are part of your trip.", "Vives en busca de senderos, montañas y lugares remotos. Planeas con detalle, acampas y haces trekking sola o en grupo. El equipo, el clima y la logística son parte de tu viaje."],
+      ["Você está realizando sonhos adiados e viaja com calma, por cidades históricas e rotas culturais. Gosta de conversar com os moradores e prioriza saúde, acessibilidade e ritmo tranquilo.", "You are fulfilling postponed dreams and travel calmly, through historic towns and cultural routes. You enjoy talking with locals and prioritize health, accessibility and a relaxed pace.", "Estás cumpliendo sueños aplazados y viajas con calma, por ciudades históricas y rutas culturales. Te gusta conversar con los vecinos y priorizas la salud, la accesibilidad y un ritmo tranquilo."],
+      ["Destinos para você", "Destinations for you", "Destinos para ti"],
+      ["Exemplo", "Example", "Ejemplo"],
+      ["Simulado", "Simulated", "Simulado"],
+      ["Fictício", "Fictional", "Ficticio"],
+      ["Exemplo fictício", "Fictional example", "Ejemplo ficticio"],
+      ["É a opção de exemplo mais próxima do seu orçamento.", "It is the example option closest to your budget.", "Es la opción de ejemplo más cercana a tu presupuesto."],
+      ["Salvar destino", "Save destination", "Guardar destino"],
+      ["Destino salvo", "Destination saved", "Destino guardado"],
+      ["Salvar", "Save", "Guardar"],
+      ["Salvo", "Saved", "Guardado"],
+      ["Remover", "Remove", "Quitar"],
+      /* Sem passaporte: lugares do mundo */
+      ["Deserto do Saara", "Sahara Desert", "Desierto del Sahara"], ["Maldivas", "Maldives", "Maldivas"], ["Cartagena, Colômbia", "Cartagena, Colombia", "Cartagena, Colombia"],
+      ["Alpes", "Alps", "Alpes"], ["Cancún", "Cancún", "Cancún"], ["Machu Picchu", "Machu Picchu", "Machu Picchu"],
+      ["Santorini, Grécia", "Santorini, Greece", "Santorini, Grecia"], ["Tulum, México", "Tulum, Mexico", "Tulum, México"],
+      ["Cataratas de Vitória, África", "Victoria Falls, Africa", "Cataratas Victoria, África"], ["Sevilha, Espanha", "Seville, Spain", "Sevilla, España"],
+      ["Nova York, EUA", "New York, USA", "Nueva York, EE. UU."], ["Cidade do Cabo, África do Sul", "Cape Town, South Africa", "Ciudad del Cabo, Sudáfrica"],
+      ["Cenotes, México", "Cenotes, Mexico", "Cenotes, México"], ["Gruta Azul, Capri", "Blue Grotto, Capri", "Gruta Azul, Capri"],
+      ["Ilhas Gili, Indonésia", "Gili Islands, Indonesia", "Islas Gili, Indonesia"], ["Costa Rica", "Costa Rica", "Costa Rica"],
+      ["Viena, Áustria", "Vienna, Austria", "Viena, Austria"], ["Kew Gardens, Londres", "Kew Gardens, London", "Kew Gardens, Londres"], ["Lima, Peru", "Lima, Peru", "Lima, Perú"],
+      /* Sem passaporte: motivos */
+      ["Dunas a perder de vista, com o extra das lagoas de água doce na época certa.", "Dunes as far as the eye can see, plus freshwater lagoons at the right time of year.", "Dunas a perder de vista, con el extra de las lagunas de agua dulce en la época adecuada."],
+      ["Mar azul-claro e piscinas naturais, sem precisar de passaporte.", "Light-blue sea and natural pools, no passport required.", "Mar azul claro y piscinas naturales, sin necesitar pasaporte."],
+      ["Centro histórico colorido para caminhar sem pressa, perto do mar.", "A colorful historic center to stroll without hurry, close to the sea.", "Centro histórico colorido para caminar sin prisa, cerca del mar."],
+      ["Clima de serra, arquitetura europeia e noites frias no inverno.", "Mountain climate, European architecture and cold winter nights.", "Clima de sierra, arquitectura europea y noches frías en invierno."],
+      ["Praia animada, mar claro e muita opção de passeio.", "Lively beach, clear water and plenty of tours to choose from.", "Playa animada, mar claro y muchas opciones de paseos."],
+      ["Paisagens de altitude, trilhas e mirantes de tirar o fôlego.", "High-altitude landscapes, trails and breathtaking viewpoints.", "Paisajes de altura, senderos y miradores que quitan el aliento."],
+      ["Ilha, mirantes e um mar azul para contemplar sem pressa.", "An island, viewpoints and a blue sea to take in unhurriedly.", "Isla, miradores y un mar azul para contemplar sin prisa."],
+      ["Praia, clima de vila e um pôr do sol para ver com calma.", "Beach, a village feel and a sunset to enjoy slowly.", "Playa, ambiente de pueblo y un atardecer para ver con calma."],
+      ["Quedas-d’água impressionantes, com passarelas para ver tudo de perto.", "Impressive waterfalls, with walkways to see everything up close.", "Cascadas impresionantes, con pasarelas para verlo todo de cerca."],
+      ["Centro histórico cheio de arquitetura, azulejos e cultura.", "A historic center full of architecture, tiles and culture.", "Centro histórico lleno de arquitectura, azulejos y cultura."],
+      ["Metrópole de arte, gastronomia e programação a qualquer hora.", "A metropolis of art, food and things to do at any hour.", "Metrópolis de arte, gastronomía y planes a cualquier hora."],
+      ["Montanha encontrando o mar, praias famosas e vida cultural intensa.", "Mountains meeting the sea, famous beaches and a vibrant cultural life.", "Montaña que se encuentra con el mar, playas famosas y una intensa vida cultural."],
+      ["Águas transparentes e uma experiência diferente em meio à natureza.", "Crystal-clear water and a different experience in the middle of nature.", "Aguas transparentes y una experiencia diferente en plena naturaleza."],
+      ["Uma gruta de água muito azul, para quem gosta de paisagens que parecem irreais.", "A grotto with deep-blue water, for those who love landscapes that look unreal.", "Una gruta de agua muy azul, para quien ama los paisajes que parecen irreales."],
+      ["Ilha sem carros, com trilhas, praias e ritmo mais lento.", "A car-free island with trails, beaches and a slower pace.", "Isla sin autos, con senderos, playas y un ritmo más lento."],
+      ["Floresta, rios e contato próximo com a natureza.", "Forest, rivers and close contact with nature.", "Selva, ríos y contacto cercano con la naturaleza."],
+      ["Um teatro histórico deslumbrante e programação cultural.", "A stunning historic theater and cultural programming.", "Un teatro histórico deslumbrante y programación cultural."],
+      ["Parques, jardins, estufa icônica e uma cidade fácil de explorar.", "Parks, gardens, an iconic greenhouse and a city that is easy to explore.", "Parques, jardines, un invernadero icónico y una ciudad fácil de explorar."],
+      ["Uma viagem guiada pela comida, com cultura de bairro e bons botecos.", "A trip guided by food, with neighborhood culture and great bars.", "Un viaje guiado por la comida, con cultura de barrio y buenos botecos."],
+      /* planejador */
+      ["O que levar", "What to pack", "Qué llevar"],
+      ["Melhor época:", "Best time to go:", "Mejor época:"],
+      ["Abra uma cidade ou digite um destino.", "Open a city or type a destination.", "Abre una ciudad o escribe un destino."],
+      ["Estimativa geral pelo clima da região. Confira a previsão antes de ir.", "General estimate based on the regional climate. Check the forecast before you go.", "Estimación general según el clima de la región. Consulta el pronóstico antes de ir."],
+      ["Junho a setembro: as lagoas costumam estar cheias e chove menos.", "June to September: the lagoons are usually full and it rains less.", "De junio a septiembre: las lagunas suelen estar llenas y llueve menos."],
+      ["Julho a dezembro: costuma chover pouco e ventar bastante.", "July to December: it usually rains little and is quite windy.", "De julio a diciembre: suele llover poco y hacer bastante viento."],
+      ["Agosto a fevereiro, o período mais seco.", "August to February, the driest period.", "De agosto a febrero, el período más seco."],
+      ["Setembro a março, com menos chuva. Confira a tábua das marés para as piscinas naturais.", "September to March, with less rain. Check the tide table for the natural pools.", "De septiembre a marzo, con menos lluvia. Consulta la tabla de mareas para las piscinas naturales."],
+      ["Setembro a março, com menos chuva.", "September to March, with less rain.", "De septiembre a marzo, con menos lluvia."],
+      ["Junho a agosto para o frio da serra. O Natal Luz costuma acontecer no fim do ano.", "June to August for the mountain cold. Natal Luz (the Christmas festival) usually takes place at the end of the year.", "De junio a agosto para el frío de la sierra. El Natal Luz suele ocurrir a fin de año."],
+      ["Março a maio e setembro a novembro, com temperaturas mais amenas.", "March to May and September to November, with milder temperatures.", "De marzo a mayo y de septiembre a noviembre, con temperaturas más suaves."],
+      ["Maio a setembro, na seca, para as trilhas. Na chuva, as cachoeiras ficam mais cheias.", "May to September, in the dry season, for the trails. In the rainy season the waterfalls are fuller.", "De mayo a septiembre, en la sequía, para los senderos. Con lluvia, las cascadas quedan más llenas."],
+      ["Maio a setembro, na seca.", "May to September, in the dry season.", "De mayo a septiembre, en la sequía."],
+      ["Junho a novembro, com menos chuva.", "June to November, with less rain.", "De junio a noviembre, con menos lluvia."],
+      ["Maio a outubro, com menos calor e chuva. Dezembro a março é alta temporada de praia.", "May to October, with less heat and rain. December to March is high beach season.", "De mayo a octubre, con menos calor y lluvia. De diciembre a marzo es temporada alta de playa."],
+      ["Dezembro a março, para aproveitar as praias.", "December to March, to enjoy the beaches.", "De diciembre a marzo, para disfrutar de las playas."],
+      ["O ano todo. Abril a setembro costuma ter menos chuva.", "All year round. April to September usually has less rain.", "Todo el año. De abril a septiembre suele llover menos."],
+      ["Junho a agosto para o frio da serra. No resto do ano o clima é mais ameno.", "June to August for the mountain cold. The rest of the year the climate is milder.", "De junio a agosto para el frío de la sierra. El resto del año el clima es más templado."],
+      ["Dezembro a março para calor e praia. Junho a agosto é frio.", "December to March for heat and beach. June to August is cold.", "De diciembre a marzo para calor y playa. De junio a agosto hace frío."],
+      ["O ano todo.", "All year round.", "Todo el año."],
+      ["Roupas leves e respiráveis", "Light, breathable clothes", "Ropa ligera y transpirable"],
+      ["Protetor solar, óculos e chapéu", "Sunscreen, sunglasses and a hat", "Protector solar, gafas y sombrero"],
+      ["Garrafa de água", "Water bottle", "Botella de agua"],
+      ["Camadas leves: camiseta e um casaco fino", "Light layers: a t-shirt and a thin jacket", "Capas ligeras: camiseta y una chaqueta fina"],
+      ["Calça confortável", "Comfortable pants", "Pantalón cómodo"],
+      ["Casaco quente e blusa de lã ou fleece", "Warm coat and a wool or fleece top", "Abrigo y jersey de lana o polar"],
+      ["Cachecol e meias grossas", "Scarf and thick socks", "Bufanda y calcetines gruesos"],
+      ["Calçado fechado", "Closed shoes", "Calzado cerrado"],
+      ["Capa de chuva ou guarda-chuva compacto", "Rain jacket or compact umbrella", "Impermeable o paraguas compacto"],
+      ["Calçado que seque rápido", "Quick-drying shoes", "Calzado de secado rápido"],
+      ["Saquinho impermeável para o celular", "Waterproof pouch for your phone", "Bolsa impermeable para el celular"],
+      ["Guarda-chuva compacto", "Compact umbrella", "Paraguas compacto"],
+      ["Hidratante e protetor labial, o ar fica seco", "Moisturizer and lip balm, the air gets dry", "Hidratante y protector labial, el aire se seca"],
+      ["Casaco leve para as noites", "Light jacket for the evenings", "Chaqueta ligera para las noches"],
+      ["Repelente", "Insect repellent", "Repelente"],
+      ["Roupa leve de manga longa", "Light long-sleeved clothing", "Ropa ligera de manga larga"],
+      ["Roupa de banho e saída de praia", "Swimsuit and beach cover-up", "Traje de baño y salida de playa"],
+      ["Chinelo", "Flip-flops", "Chancletas"],
+      ["Tênis de trilha", "Hiking shoes", "Zapatillas de senderismo"],
+      ["Mochila pequena", "Small backpack", "Mochila pequeña"],
+      /* página da cidade */
+      ["Voltar ao mapa", "Back to the map", "Volver al mapa"],
+      ["Avaliar", "Review", "Reseñar"],
+      ["O que dizem", "What people say", "Qué dicen"],
+      ["Relatos fictícios, para demonstração.", "Fictional reviews, for demonstration.", "Relatos ficticios, para demostración."],
+      ["Período", "Period", "Período"],
+      ["Relatos", "Reviews", "Relatos"],
+      ["Nenhum relato neste período.", "No reviews in this period.", "Ningún relato en este período."],
+      ["Temas mais citados", "Most mentioned topics", "Temas más mencionados"],
+      ["Selo Onça: boa nota média nos relatos e nenhuma situação de risco (demonstração)", "Jaguar Seal: good average rating in the reviews and no risk situations (demo)", "Sello Jaguar: buena nota media en los relatos y ninguna situación de riesgo (demostración)"],
+      ["Ainda sem relatos aqui.", "No reviews here yet.", "Aún no hay relatos aquí."],
+      ["Seja a primeira a avaliar", "Be the first to review", "Sé la primera en reseñar"],
+      ["Relatos de viajantes", "Traveler reviews", "Relatos de viajeras"],
+      ["Enviados por visitantes e revisados pela equipe antes de aparecer.", "Sent by visitors and reviewed by the team before appearing.", "Enviados por visitantes y revisados por el equipo antes de aparecer."],
+      ["Hospedagem não informada", "Accommodation not specified", "Alojamiento no informado"],
+      ["Viajou sozinha", "Traveled solo", "Viajó sola"],
+      ["Sua avaliação", "Your review", "Tu reseña"],
+      ["Quanto custa", "How much it costs", "Cuánto cuesta"],
+      ["Diária estimada", "Estimated daily rate", "Tarifa diaria estimada"],
+      ["Tipo", "Type", "Tipo"],
+      ["Hotéis fictícios de exemplo", "Fictional example hotels", "Hoteles ficticios de ejemplo"],
+      ["Valores simulados. Confirme com a hospedagem.", "Simulated prices. Confirm with the accommodation.", "Valores simulados. Confirma con el alojamiento."],
+      ["Onde ficar", "Where to stay", "Dónde alojarse"],
+      ["Carregando...", "Loading...", "Cargando..."],
+      ["Ainda não há hospedagens desta cidade na nossa lista.", "There are no accommodations for this city on our list yet.", "Aún no hay alojamientos de esta ciudad en nuestra lista."],
+      ["Lista de cadastro, sem nota. Não é recomendação.", "Registry list, no ratings. Not a recommendation.", "Lista de registro, sin calificación. No es una recomendación."],
+      ["Buscar pelo nome", "Search by name", "Buscar por nombre"],
+      ["Buscar hospedagem pelo nome", "Search accommodation by name", "Buscar alojamiento por nombre"],
+      ["Tipo de hospedagem", "Accommodation type", "Tipo de alojamiento"],
+      ["Todos os tipos", "All types", "Todos los tipos"],
+      ["Nada encontrado.", "Nothing found.", "No se encontró nada."],
+      ["Nenhuma cidade encontrada", "No city found", "Ninguna ciudad encontrada"],
+      ["Ver avaliações no Google", "See reviews on Google", "Ver reseñas en Google"],
+      ["Contexto do estado", "State context", "Contexto del estado"],
+      ["Indicadores sobre violência contra mulheres, 2025", "Indicators on violence against women, 2025", "Indicadores sobre violencia contra las mujeres, 2025"],
+      ["Indicador", "Indicator", "Indicador"],
+      ["Brasil", "Brazil", "Brasil"],
+      ["Importunação sexual", "Sexual harassment", "Acoso sexual"],
+      ["por 100 mil habitantes", "per 100,000 inhabitants", "por 100 mil habitantes"],
+      ["Perseguição, vítimas mulheres", "Stalking, female victims", "Acecho, víctimas mujeres"],
+      ["por 100 mil mulheres", "per 100,000 women", "por 100 mil mujeres"],
+      ["Feminicídio", "Femicide", "Feminicidio"],
+      ["Registros policiais do estado inteiro. Taxas altas podem refletir mais denúncias. Fonte: Anuário Brasileiro de Segurança Pública 2026. Apoio: Ligue 180.", "Police records for the whole state. High rates may reflect more reporting. Source: Brazilian Public Security Yearbook 2026. Support: dial 180.", "Registros policiales de todo el estado. Tasas altas pueden reflejar más denuncias. Fuente: Anuario Brasileño de Seguridad Pública 2026. Apoyo: llama al 180."],
+      ["Mais dados oficiais:", "More official data:", "Más datos oficiales:"],
+      ["Comparar", "Compare", "Comparar"],
+      ["Comparar com", "Compare with", "Comparar con"],
+      ["Escolha uma cidade", "Choose a city", "Elige una ciudad"],
+      ["Relatos simulados", "Simulated reviews", "Relatos simulados"],
+      ["Positivos", "Positive", "Positivos"],
+      ["Negativos", "Negative", "Negativos"],
+      ["Citam segurança", "Mention safety", "Mencionan seguridad"],
+      ["Situações de risco", "Risk situations", "Situaciones de riesgo"],
+      ["Citam iluminação", "Mention lighting", "Mencionan iluminación"],
+      ["Citam acolhimento", "Mention hospitality", "Mencionan acogida"],
+      ["Segurança", "Safety", "Seguridad"],
+      ["Iluminação", "Lighting", "Iluminación"],
+      ["Localização", "Location", "Ubicación"],
+      ["Atendimento", "Service", "Atención"],
+      ["Acolhimento", "Hospitality", "Acogida"],
+      ["sem lista", "no list", "sin lista"],
+      ["Ver cidade", "See city", "Ver ciudad"],
+      /* salvos */
+      ["Você ainda não salvou nada. Abra uma cidade e toque em \"Salvar destino\" ou em \"Salvar\" ao lado de uma hospedagem.", "You haven't saved anything yet. Open a city and tap \"Save destination\" or \"Save\" next to an accommodation.", "Aún no has guardado nada. Abre una ciudad y toca \"Guardar destino\" o \"Guardar\" junto a un alojamiento."],
+      ["Ir para o mapa", "Go to the map", "Ir al mapa"],
+      ["Destinos", "Destinations", "Destinos"],
+      ["Hospedagens", "Accommodations", "Alojamientos"],
+      ["Nenhum destino salvo.", "No saved destinations.", "Ningún destino guardado."],
+      ["Nenhuma hospedagem salva.", "No saved accommodations.", "Ningún alojamiento guardado."],
+      /* avaliação: respostas e erros */
+      ["Positivo", "Positive", "Positivo"], ["Neutro", "Neutral", "Neutro"], ["Negativo", "Negative", "Negativo"],
+      ["Nenhum tema da nossa lista.", "No topics from our list.", "Ningún tema de nuestra lista."],
+      ["O texto e a nota apontam para lados diferentes. Isso acontece, e é por isso que olhamos os dois.", "The text and the rating point in different directions. It happens, which is why we look at both.", "El texto y la nota apuntan a lados distintos. Pasa, y por eso miramos los dos."],
+      ["Analisado no servidor, pela API do Okaí.", "Analyzed on the server, by the Okaí API.", "Analizado en el servidor, por la API de Okaí."],
+      ["Analisado neste navegador (modo reserva).", "Analyzed in this browser (backup mode).", "Analizado en este navegador (modo de respaldo)."],
+      ["Analisando…", "Analyzing…", "Analizando…"],
+      ["Enviando para revisão…", "Sending for review…", "Enviando para revisión…"],
+      ["Recebida! Ela aparece na página da cidade depois de revisada.", "Received! It will appear on the city page once reviewed.", "¡Recibida! Aparecerá en la página de la ciudad una vez revisada."],
+      ["A publicação ainda não está ativa. Sua avaliação ficou salva neste navegador.", "Publishing is not active yet. Your review was saved in this browser.", "La publicación aún no está activa. Tu reseña quedó guardada en este navegador."],
+      ["Não foi possível enviar agora. Sua avaliação ficou salva neste navegador.", "We couldn't send it right now. Your review was saved in this browser.", "No fue posible enviarla ahora. Tu reseña quedó guardada en este navegador."],
+      ["Escolha o destino.", "Choose the destination.", "Elige el destino."],
+      ["Não encontramos esse destino. Digite o nome da cidade.", "We couldn't find that destination. Type the city name.", "No encontramos ese destino. Escribe el nombre de la ciudad."],
+      ["Escolha uma nota de 1 a 5.", "Choose a rating from 1 to 5.", "Elige una nota de 1 a 5."],
+      ["Escreva um pouco mais sobre a sua estadia.", "Write a little more about your stay.", "Escribe un poco más sobre tu estadía."],
+      /* Como analisamos */
+      ["Hospedagens, avaliações do treino e dados do Anuário.", "Accommodations, training reviews and Yearbook data.", "Alojamientos, reseñas de entrenamiento y datos del Anuario."],
+      ["Hotéis fictícios, notas, preços e relatos.", "Fictional hotels, ratings, prices and reviews.", "Hoteles ficticios, notas, precios y relatos."],
+      ["Por que olhar além da nota", "Why look beyond the rating", "Por qué mirar más allá de la nota"],
+      ["de 5", "out of 5", "de 5"],
+      [`"A equipe me recebeu muito bem, e a rua é movimentada até tarde. Voltei a pé do jantar tranquila."`, `"The staff welcomed me very well, and the street is busy until late. I walked back from dinner feeling calm."`, `"El equipo me recibió muy bien, y la calle tiene movimiento hasta tarde. Volví a pie de la cena tranquila."`],
+      [`"O quarto é excelente e o café é ótimo, mas a rua fica escura à noite e preferi não sair a pé."`, `"The room is excellent and the breakfast is great, but the street gets dark at night and I preferred not to go out on foot."`, `"La habitación es excelente y el desayuno es genial, pero la calle queda oscura de noche y preferí no salir a pie."`],
+      ["O modelo", "The model", "El modelo"],
+      ["Temas nas avaliações reais", "Topics in the real reviews", "Temas en las reseñas reales"],
+      ["Quem menciona viagem sozinha", "Who mentions traveling solo", "Quién menciona viajar sola"],
+      ["Indício, não prova: a base não informa gênero.", "A clue, not proof: the dataset doesn't include gender.", "Un indicio, no una prueba: la base no informa el género."],
+      ["Limites", "Limits", "Límites"],
+      ["Mostramos percepções, nunca garantias de segurança.", "We show perceptions, never safety guarantees.", "Mostramos percepciones, nunca garantías de seguridad."],
+      ["Temas são achados por palavras-chave, sem entender o contexto todo.", "Topics are found by keywords, without understanding the full context.", "Los temas se detectan por palabras clave, sin entender todo el contexto."],
+      ["Os dados do Anuário valem para o estado inteiro, não para uma cidade.", "Yearbook data applies to the whole state, not to a single city.", "Los datos del Anuario valen para todo el estado, no para una ciudad."],
+      ["Estar na lista de hospedagens não é recomendação.", "Being on the accommodation list is not a recommendation.", "Estar en la lista de alojamientos no es una recomendación."],
+      ["Grupo", "Group", "Grupo"],
+      ["Avaliações", "Reviews", "Reseñas"],
+      ["Nota média", "Average rating", "Nota media"],
+      ["Negativas", "Negative", "Negativas"]
+    ];
+
+    /* frases "Gostou de ...?" */
+    var DE = {
+      "do Deserto do Saara": ["the Sahara Desert", "el desierto del Sahara"], "das Maldivas": ["the Maldives", "las Maldivas"], "de Cartagena": ["Cartagena", "Cartagena"],
+      "dos Alpes": ["the Alps", "los Alpes"], "de Cancún": ["Cancún", "Cancún"], "de Machu Picchu": ["Machu Picchu", "Machu Picchu"],
+      "de Santorini": ["Santorini", "Santorini"], "de Tulum": ["Tulum", "Tulum"], "das Cataratas de Vitória": ["Victoria Falls", "las cataratas Victoria"],
+      "de Sevilha": ["Seville", "Sevilla"], "de Nova York": ["New York", "Nueva York"], "da Cidade do Cabo": ["Cape Town", "Ciudad del Cabo"],
+      "dos cenotes do México": ["the cenotes of Mexico", "los cenotes de México"], "da Gruta Azul de Capri": ["the Blue Grotto in Capri", "la Gruta Azul de Capri"],
+      "das Ilhas Gili": ["the Gili Islands", "las islas Gili"], "da Costa Rica": ["Costa Rica", "Costa Rica"], "de Viena": ["Vienna", "Viena"],
+      "do Kew Gardens": ["Kew Gardens", "Kew Gardens"], "de Lima": ["Lima", "Lima"]
+    };
+    var MP = { janeiro: 0, fevereiro: 1, "março": 2, abril: 3, maio: 4, junho: 5, julho: 6, agosto: 7, setembro: 8, outubro: 9, novembro: 10, dezembro: 11 };
+    var MEN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var MES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+    var mapa = {};
+    D.forEach(function (r) { mapa[r[0]] = { en: r[1], es: r[2] }; });
+    function T(pt, l) { var m = mapa[pt]; return m ? m[l] : pt; }
+    function mes(pt, l) { var i = MP[pt.toLowerCase()]; return i === undefined ? pt : (l === "en" ? MEN[i] : MES[i]); }
+    function hosp(n, l) { var um = parseInt(String(n).replace(/\./g, ""), 10) === 1; return l === "en" ? (um ? "accommodation" : "accommodations") : (um ? "alojamiento" : "alojamientos"); }
+
+    var R = [
+      [/^Pergunta (\d+) de (\d+)$/, function (x, l) { return l === "en" ? "Question " + x[1] + " of " + x[2] : "Pregunta " + x[1] + " de " + x[2]; }],
+      [/^([\d.]+) hospedagens?$/, function (x, l) { return x[1] + " " + hosp(x[1], l); }],
+      [/^([\d.]+) na lista$/, function (x, l) { return l === "en" ? x[1] + " on the list" : x[1] + " en la lista"; }],
+      [/^([\d.]+) hospedagens? em ([\d.]+) cidades?\.(?: No mapa, aparecem as ([\d.]+) cidades com mais opções: escolha um estado para ver as demais ou use a busca\.)?$/, function (x, l) {
+        var t = l === "en" ? x[1] + " " + hosp(x[1], l) + " in " + x[2] + (x[2] === "1" ? " city." : " cities.") : x[1] + " " + hosp(x[1], l) + " en " + x[2] + (x[2] === "1" ? " ciudad." : " ciudades.");
+        if (x[3]) t += l === "en" ? " The map shows the " + x[3] + " cities with the most options: pick a state to see the rest or use search." : " En el mapa aparecen las " + x[3] + " ciudades con más opciones: elige un estado para ver las demás o usa la búsqueda.";
+        return t;
+      }],
+      [/^(.+) · (\d+) hospedagens? na lista$/, function (x, l) { return T(x[1], l) + " · " + x[2] + " " + hosp(x[2], l) + (l === "en" ? " on our list" : " en nuestra lista"); }],
+      [/^(.+) · ainda sem hospedagens na nossa lista$/, function (x, l) { return T(x[1], l) + (l === "en" ? " · no accommodations on our list yet" : " · aún sin alojamientos en nuestra lista"); }],
+      [/^Em ([a-zç]+):$/, function (x, l) { return l === "en" ? "In " + mes(x[1], l) + ":" : "En " + mes(x[1], l) + ":"; }],
+      [/^(Calor|Clima ameno|Frio)( e muita chuva|, com chance de chuva| e pouca chuva)\.$/, function (x, l) {
+        var a = { en: { "Calor": "Hot", "Clima ameno": "Mild weather", "Frio": "Cold" }, es: { "Calor": "Calor", "Clima ameno": "Clima templado", "Frio": "Frío" } };
+        var b = { en: { " e muita chuva": " with heavy rain", ", com chance de chuva": ", with a chance of rain", " e pouca chuva": " with little rain" }, es: { " e muita chuva": " y mucha lluvia", ", com chance de chuva": ", con posibilidad de lluvia", " e pouca chuva": " y poca lluvia" } };
+        return a[l][x[1]] + b[l][x[2]] + ".";
+      }],
+      [/^([A-Za-zçÇ]+)(?: a ([a-zç]+))?, quando costuma chover menos\.$/, function (x, l) {
+        if (MP[x[1].toLowerCase()] === undefined) return null;
+        if (l === "en") return mes(x[1], l) + (x[2] ? " to " + mes(x[2], l) : "") + ", when it usually rains less.";
+        return (x[2] ? "De " + mes(x[1], l) + " a " + mes(x[2], l) : "En " + mes(x[1], l)) + ", cuando suele llover menos.";
+      }],
+      [/^Para o orçamento "(.+)", comece olhando:$/, function (x, l) { return l === "en" ? 'For the budget "' + T(x[1], l) + '", start by looking at:' : 'Para el presupuesto "' + T(x[1], l) + '", empieza mirando:'; }],
+      [/^(Hotel|Pousada|Hostel|Resort) · diária de (R\$ [\d.]+)$/, function (x, l) { return T(x[1], l) + (l === "en" ? " · daily rate of " : " · tarifa diaria de ") + x[2]; }],
+      [/^Nota (\d) de 5$/, function (x, l) { return l === "en" ? "Rating " + x[1] + " of 5" : "Nota " + x[1] + " de 5"; }],
+      [/^(Sistema|Modelo): (positivo|neutro|negativo)$/, function (x, l) {
+        var p = { en: { positivo: "positive", neutro: "neutral", negativo: "negative" }, es: { positivo: "positivo", neutro: "neutro", negativo: "negativo" } };
+        return (l === "en" ? (x[1] === "Sistema" ? "System" : "Model") : x[1]) + ": " + p[l][x[2]];
+      }],
+      [/^Temas: (.+)$/, function (x, l) { return (l === "en" ? "Topics: " : "Temas: ") + x[1].split(", ").map(function (t) { return T(t, l); }).join(", "); }],
+      [/^Percepção nos (\d+) relatos$/, function (x, l) { return l === "en" ? "Perception in the " + x[1] + " reviews" : "Percepción en los " + x[1] + " relatos"; }],
+      [/^(\d+)% positivos · (\d+)% neutros · (\d+)% negativos$/, function (x, l) { return l === "en" ? x[1] + "% positive · " + x[2] + "% neutral · " + x[3] + "% negative" : x[1] + "% positivos · " + x[2] + "% neutros · " + x[3] + "% negativos"; }],
+      [/^Mostrar mais \((\d+)\)$/, function (x, l) { return (l === "en" ? "Show more (" : "Mostrar más (") + x[1] + ")"; }],
+      [/^Confiança: (\d+)%$/, function (x, l) { return (l === "en" ? "Confidence: " : "Confianza: ") + x[1] + "%"; }],
+      [/^(.*) · desde (.+)$/, function (x, l) { return x[1] + (l === "en" ? " · since " : " · desde ") + x[2]; }],
+      [/^Não encontramos "(.+)"\. Tente o nome da cidade\.$/, function (x, l) { return l === "en" ? "We couldn't find \"" + x[1] + "\". Try the city name." : "No encontramos \"" + x[1] + "\". Prueba con el nombre de la ciudad."; }],
+      [/^Gostou (.+)\? Vai gostar de:$/, function (x, l) { var d = DE[x[1]]; if (!d) return null; return l === "en" ? "Loved " + d[0] + "? You'll love:" : "¿Te gustó " + d[1] + "? Te gustará:"; }]
+    ];
+
+    var lang = "pt", usado = false, timer = null;
+    var infoT = new WeakMap(), infoA = new WeakMap(), ATTR = ["placeholder", "aria-label", "title", "alt"];
+    function idioma() { var l = document.documentElement.lang; return l === "en" ? "en" : l === "es" ? "es" : "pt"; }
+
+    function traduzir(txt) {
+      if (lang === "pt") return null;
+      var k = txt.trim(); if (!k) return null;
+      var m = mapa[k];
+      if (m) return txt.replace(k, function () { return m[lang]; });
+      for (var i = 0; i < R.length; i++) {
+        var x = k.match(R[i][0]);
+        if (x) { var out = R[i][1](x, lang); if (out != null) return txt.replace(k, function () { return out; }); }
+      }
+      return null;
+    }
+    function texto(n) {
+      var v = n.nodeValue, rec = infoT.get(n), pt = (rec && v === rec.mostrado) ? rec.pt : v;
+      var t = traduzir(pt), novo = t === null ? pt : t;
+      if (novo !== v) n.nodeValue = novo;
+      if (t !== null) infoT.set(n, { pt: pt, mostrado: t }); else infoT.delete(n);
+    }
+    function atributos(el) {
+      var reg = infoA.get(el) || {};
+      ATTR.forEach(function (a) {
+        if (!el.hasAttribute(a)) return;
+        var v = el.getAttribute(a), rec = reg[a], pt = (rec && v === rec.mostrado) ? rec.pt : v;
+        var t = traduzir(pt), novo = t === null ? pt : t;
+        if (novo !== v) el.setAttribute(a, novo);
+        if (t !== null) reg[a] = { pt: pt, mostrado: t }; else delete reg[a];
+      });
+      infoA.set(el, reg);
+    }
+    function passar() {
+      lang = idioma(); if (lang !== "pt") usado = true;
+      var w = document.createTreeWalker(document.body, 5), n;
+      while ((n = w.nextNode())) {
+        if (n.nodeType === 3) { var p = n.parentNode.nodeName; if (p !== "SCRIPT" && p !== "STYLE") texto(n); }
+        else atributos(n);
+      }
+    }
+    new MutationObserver(function () {
+      if (idioma() === "pt" && !usado) return;
+      clearTimeout(timer); timer = setTimeout(passar, 60);
+    }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTR });
+    new MutationObserver(passar).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    passar();
+  })();
     /* Fonte Coiny nos títulos escolhidos */
   (function () {
     var l = document.createElement('link');
