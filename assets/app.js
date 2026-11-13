@@ -1201,4 +1201,37 @@
     st.textContent = css.join('');
     document.head.appendChild(st);
   })();
+    /* Fonte Coiny nos títulos escolhidos */
+  (function () {
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Coiny&display=swap';
+    document.head.appendChild(l);
+
+    var alvos = [
+      '.hero h1',                                  /* Okaí */
+      '#mapa h2',                                  /* Encontre o seu destino */
+      '#perfil h2',                                /* Que viajante é você? */
+      '#gostou h2',                                /* Gostou de lá? Vai gostar daqui */
+      '.quiz-rotulo',                              /* Qual destes lugares mais combina com você? */
+      '#antes h2',                                 /* Antes de ir */
+      '.antes-grade .cartao h3',                   /* Checklist e Contatos úteis */
+      '#avaliacao h2',                             /* Deixe sua avaliação */
+      '.aval-saida h3',                            /* O que o sistema entendeu / Suas avaliações */
+      'details.como summary',                      /* Como analisamos */
+      '#vistaSalvos h2',                           /* Seus salvos */
+      '#sobre h2',                                 /* Sobre nós */
+      '.duas-colunas h3'                           /* O projeto / O nome */
+    ];
+    var regras = alvos.map(function (s) { return 'body ' + s; }).join(',');
+
+    var st = document.createElement('style');
+    st.textContent =
+      regras + '{font-family:"Coiny",Georgia,serif !important;font-weight:400 !important;font-style:normal !important;font-synthesis:none;text-transform:none !important;letter-spacing:0 !important;font-variation-settings:normal !important}' +
+      'body .secao h2,body #avaliacao h2,body #vistaSalvos h2{font-size:clamp(34px,4.8vw,64px) !important;line-height:1.1 !important}' +
+      'body #sobre h2{font-size:clamp(46px,7vw,104px) !important;line-height:1.05 !important}' +
+      'body .hero h1{font-size:clamp(76px,12vw,160px) !important}' +
+      'body .quiz-rotulo,body .antes-grade .cartao h3,body .aval-saida h3,body .duas-colunas h3,body details.como summary{font-size:24px !important}';
+    document.head.appendChild(st);
+  })();
 })();
