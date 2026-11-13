@@ -448,3 +448,7 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 /* legenda */
 .chave-relato{background:#EFA6B5;box-shadow:0 0 0 1px #7A2433}
 .chave-lista{background:#7A2433}
+
+.hero-fotos .painel img{filter:saturate(.75)}
+.hero-fotos .painel::after{background:var(--d,#7A2433) !important;mix-blend-mode:color;opacity:.6;transition:opacity .7s ease}
+.hero-fotos .painel.ativo::after{opacity:.45}
