@@ -449,6 +449,6 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 .chave-relato{background:#EFA6B5;box-shadow:0 0 0 1px #7A2433}
 .chave-lista{background:#7A2433}
 
-.hero-fotos .painel img{filter:saturate(.75)}
-.hero-fotos .painel::after{background:var(--d,#7A2433) !important;mix-blend-mode:color;opacity:.6;transition:opacity .7s ease}
-.hero-fotos .painel.ativo::after{opacity:.45}
+.hero-fotos .painel img{filter:sepia(.55) saturate(.85) contrast(1.02)}
+.hero-fotos .painel::after{background:var(--d,#7A2433) !important;opacity:.3;transition:opacity .7s ease}
+.hero-fotos .painel.ativo::after{opacity:.18}
