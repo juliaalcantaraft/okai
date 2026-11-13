@@ -1758,6 +1758,53 @@
     new MutationObserver(passar).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
     passar();
   })();
+    /* Barra de cima compacta + botão de idioma com bandeirinha */
+  (function () {
+    /* barra: tudo em uma linha, como antes, com os botões Temas e Idioma pequenos */
+    var st = document.createElement('style');
+    st.textContent =
+      '.menu{flex-wrap:nowrap !important;gap:0 20px !important;padding-top:8px !important;padding-bottom:8px !important}' +
+      '.menu-frase{white-space:nowrap;font-size:18px !important}' +
+      '.menu-links{flex-wrap:nowrap !important;gap:0 18px !important;align-items:center}' +
+      '.menu .menu-links a,.menu .menu-links a:hover,.menu .menu-links a[aria-current]{font-size:12px !important;letter-spacing:.09em !important;white-space:nowrap}' +
+      '.tema-caixa{margin-left:0 !important}' +
+      '.tema-botao{min-height:32px !important;padding:0 12px !important;font-size:11px !important;letter-spacing:.12em !important;display:inline-flex;align-items:center;gap:6px}' +
+      '.tema-botao svg,.tema-lista svg{display:block;flex:none;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18)}' +
+      '.tema-botao svg{box-shadow:0 0 0 1px rgba(255,255,255,.55)}' +
+      '@media (max-width:1180px){.menu{flex-wrap:wrap !important}.menu-links{flex-wrap:wrap !important}}';
+    document.head.appendChild(st);
+
+    /* bandeirinhas em SVG (as bandeiras emoji não aparecem no Windows) */
+    var h = 17 / 13, listras = '';
+    for (var i = 0; i < 7; i++) listras += '<rect y="' + (i * 2 * h) + '" width="24" height="' + h + '" fill="#B22234"/>';
+    var BANDEIRAS = {
+      pt: '<svg width="24" height="17" viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="17" fill="#009B3A"/><path d="M12 2.2L21.2 8.5 12 14.8 2.8 8.5Z" fill="#FEDF00"/><circle cx="12" cy="8.5" r="3.6" fill="#002776"/></svg>',
+      en: '<svg width="24" height="17" viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="17" fill="#fff"/>' + listras + '<rect width="10" height="' + (7 * h) + '" fill="#3C3B6E"/></svg>',
+      es: '<svg width="24" height="17" viewBox="0 0 24 17" aria-hidden="true"><rect width="24" height="17" fill="#AA151B"/><rect y="4.25" width="24" height="8.5" fill="#F1BF00"/></svg>'
+    };
+    var NOMES = { pt: 'Português', en: 'English', es: 'Español' }, ROT = { pt: 'Idioma', en: 'Language', es: 'Idioma' };
+
+    var item = document.querySelector('[data-idioma]');
+    var caixa = item.closest('.tema-caixa');
+    var botao = caixa.querySelector('.tema-botao');
+
+    /* bandeira de cada opção da lista */
+    caixa.querySelectorAll('[data-idioma]').forEach(function (b) {
+      b.innerHTML = BANDEIRAS[b.dataset.idioma] + '<span>' + NOMES[b.dataset.idioma] + '</span>';
+    });
+
+    /* bandeira do idioma atual no botão */
+    function atualizar() {
+      var l = document.documentElement.lang, id = l === 'en' ? 'en' : l === 'es' ? 'es' : 'pt';
+      if (botao.dataset.bandeira === id) return;
+      botao.dataset.bandeira = id;
+      botao.innerHTML = BANDEIRAS[id];
+      botao.setAttribute('aria-label', ROT[id] + ': ' + NOMES[id]);
+    }
+    new MutationObserver(atualizar).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    new MutationObserver(function () { delete botao.dataset.bandeira; atualizar(); }).observe(botao, { childList: true });
+    atualizar();
+  })();
     /* Fonte Coiny nos títulos escolhidos */
   (function () {
     var l = document.createElement('link');
