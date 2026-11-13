@@ -1201,6 +1201,217 @@
     st.textContent = css.join('');
     document.head.appendChild(st);
   })();
+    /* Idiomas: português, inglês e espanhol na interface e na OkaIA */
+  (function () {
+    var D = [
+      ["Pular para o conteúdo", "Skip to content", "Saltar al contenido"],
+      ["Viaje sozinha, sinta-se em casa.", "Travel solo, feel at home.", "Viaja sola, siéntete en casa."],
+      ["Início", "Home", "Inicio"],
+      ["Mapa", "Map", "Mapa"],
+      ["Seu perfil", "Your profile", "Tu perfil"],
+      ["Antes de ir", "Before you go", "Antes de ir"],
+      ["Sem passaporte", "No passport needed", "Sin pasaporte"],
+      ["Deixe sua avaliação", "Leave a review", "Deja tu reseña"],
+      ["Salvos (", "Saved (", "Guardados ("],
+      ["Sobre nós", "About us", "Sobre nosotras"],
+      ["Temas", "Themes", "Temas"],
+      ["Para onde você quer ir?", "Where do you want to go?", "¿A dónde quieres ir?"],
+      ["Pesquisar", "Search", "Buscar"],
+      ["Pausar as fotos", "Pause the photos", "Pausar las fotos"],
+      ["Continuar as fotos", "Resume the photos", "Reanudar las fotos"],
+      ["Pesquise um destino no Brasil e veja o que dizem sobre segurança e acolhimento.", "Search for a destination in Brazil and see what people say about safety and hospitality.", "Busca un destino en Brasil y mira qué dicen sobre seguridad y hospitalidad."],
+      ["Sua próxima viagem começa aqui", "Your next trip starts here", "Tu próximo viaje empieza aquí"],
+      ["Destinos, hospedagens e relatos para planejar sua viagem sozinha.", "Destinations, stays and stories to plan your solo trip.", "Destinos, alojamientos y relatos para planear tu viaje en solitario."],
+      ["Encontre um destino", "Find a destination", "Encuentra un destino"],
+      ["Descubra seu perfil", "Discover your profile", "Descubre tu perfil"],
+      ["Compare lugares", "Compare places", "Compara lugares"],
+      ["Prepare a viagem", "Plan your trip", "Prepara el viaje"],
+      ["Encontre o seu destino", "Find your destination", "Encuentra tu destino"],
+      ["Clique em uma oca para abrir a cidade.", "Click an oca to open the city.", "Haz clic en una oca para abrir la ciudad."],
+      ["Região", "Region", "Región"],
+      ["Todo o Brasil", "All of Brazil", "Todo Brasil"],
+      ["Norte", "North", "Norte"],
+      ["Nordeste", "Northeast", "Nordeste"],
+      ["Centro-Oeste", "Central-West", "Centro-Oeste"],
+      ["Sudeste", "Southeast", "Sudeste"],
+      ["Sul", "South", "Sur"],
+      ["Estado", "State", "Estado"],
+      ["Todos", "All", "Todos"],
+      ["Todas", "All", "Todas"],
+      ["Hospedagem", "Accommodation", "Alojamiento"],
+      ["Pousada", "Inn (pousada)", "Posada"],
+      ["Só cidades com relatos", "Only cities with reviews", "Solo ciudades con relatos"],
+      ["Com relatos simulados", "With simulated reviews", "Con relatos simulados"],
+      ["Com hospedagens", "With accommodations", "Con alojamientos"],
+      ["Que viajante é você?", "What kind of traveler are you?", "¿Qué viajera eres?"],
+      ["Seis perguntas, cinco perfis e sugestões para você.", "Six questions, five profiles and suggestions for you.", "Seis preguntas, cinco perfiles y sugerencias para ti."],
+      ["Seis perguntas, uma de cada vez.", "Six questions, one at a time.", "Seis preguntas, una a la vez."],
+      ["Leva menos de um minuto.", "Takes less than a minute.", "Lleva menos de un minuto."],
+      ["Descobrir meu perfil", "Discover my profile", "Descubrir mi perfil"],
+      ["Voltar", "Back", "Volver"],
+      ["Próxima", "Next", "Siguiente"],
+      ["Ver meu perfil", "See my profile", "Ver mi perfil"],
+      ["Refazer o quiz", "Retake the quiz", "Repetir el quiz"],
+      ["Gostou de lá? Vai gostar daqui", "Loved it there? You'll love it here", "¿Te gustó allá? Te gustará aquí"],
+      ["Escolha um lugar do mundo e veja o destino brasileiro parecido.", "Pick a place in the world and see a similar Brazilian destination.", "Elige un lugar del mundo y mira el destino brasileño parecido."],
+      ["Qual destes lugares mais combina com você?", "Which of these places suits you best?", "¿Cuál de estos lugares va más contigo?"],
+      ["Selecione aqui", "Select here", "Selecciona aquí"],
+      ["Ver sugestão", "See suggestion", "Ver sugerencia"],
+      ["Ver a cidade", "See the city", "Ver la ciudad"],
+      ["Destinos anteriores", "Previous destinations", "Destinos anteriores"],
+      ["Próximos destinos", "Next destinations", "Próximos destinos"],
+      ["Escolha o destino e o mês para ver a melhor época e o que levar.", "Choose the destination and month to see the best time to go and what to pack.", "Elige el destino y el mes para ver la mejor época y qué llevar."],
+      ["Destino", "Destination", "Destino"],
+      ["Mês da viagem", "Travel month", "Mes del viaje"],
+      ["Checklist", "Checklist", "Lista de verificación"],
+      ["Enviar o roteiro e os endereços para uma pessoa de confiança", "Send your itinerary and addresses to someone you trust", "Enviar el itinerario y las direcciones a una persona de confianza"],
+      ["Combinar horários para dar notícias", "Agree on times to check in", "Acordar horarios para dar noticias"],
+      ["Ler avaliações recentes da hospedagem", "Read recent reviews of the accommodation", "Leer reseñas recientes del alojamiento"],
+      ["Tentar chegar ao destino durante o dia", "Try to arrive during the day", "Intentar llegar al destino de día"],
+      ["Saber como sair da hospedagem à noite", "Know how to leave the accommodation at night", "Saber cómo salir del alojamiento de noche"],
+      ["Salvar mapas para usar sem internet", "Save maps for offline use", "Guardar mapas para usar sin internet"],
+      ["Guardar cópias digitais dos documentos", "Keep digital copies of your documents", "Guardar copias digitales de los documentos"],
+      ["Levar carregador portátil", "Bring a portable charger", "Llevar cargador portátil"],
+      ["Salvar o Ligue 180 e os telefones de emergência", "Save 180 and the emergency numbers", "Guardar el 180 y los teléfonos de emergencia"],
+      ["Contatos úteis", "Useful contacts", "Contactos útiles"],
+      ["Ligue 180", "Call 180", "Llama al 180"],
+      ["Central de Atendimento à Mulher. Gratuita, 24 horas.", "Women's Helpline. Free, 24 hours.", "Central de Atención a la Mujer. Gratuita, 24 horas."],
+      ["Ligar para 180", "Call 180", "Llamar al 180"],
+      ["Perigo imediato: 190", "Immediate danger: 190", "Peligro inmediato: 190"],
+      ["Polícia Militar.", "Military Police.", "Policía Militar."],
+      ["Saúde: 192 e 193", "Health: 192 and 193", "Salud: 192 y 193"],
+      ["Samu e Bombeiros.", "Ambulance (Samu) and Fire Department.", "Samu (ambulancia) y Bomberos."],
+      ["Fonte:", "Source:", "Fuente:"],
+      ["Janeiro", "January", "Enero"], ["Fevereiro", "February", "Febrero"], ["Março", "March", "Marzo"],
+      ["Abril", "April", "Abril"], ["Maio", "May", "Mayo"], ["Junho", "June", "Junio"],
+      ["Julho", "July", "Julio"], ["Agosto", "August", "Agosto"], ["Setembro", "September", "Septiembre"],
+      ["Outubro", "October", "Octubre"], ["Novembro", "November", "Noviembre"], ["Dezembro", "December", "Diciembre"],
+      ["Conte como foi a sua hospedagem. A gente mostra o que o sistema entende do seu texto.", "Tell us about your stay. We show what the system understands from your text.", "Cuéntanos cómo fue tu alojamiento. Te mostramos lo que el sistema entiende de tu texto."],
+      ["(opcional)", "(optional)", "(opcional)"],
+      ["(opcional, não aparece no site)", "(optional, not shown on the site)", "(opcional, no aparece en el sitio)"],
+      ["Você viajou sozinha?", "Did you travel solo?", "¿Viajaste sola?"],
+      ["Sim", "Yes", "Sí"],
+      ["Não", "No", "No"],
+      ["Como você se identifica?", "How do you identify?", "¿Cómo te identificas?"],
+      ["Mulher", "Woman", "Mujer"],
+      ["Homem", "Man", "Hombre"],
+      ["Outro", "Other", "Otro"],
+      ["Prefiro não dizer", "Prefer not to say", "Prefiero no decirlo"],
+      ["Sua nota", "Your rating", "Tu calificación"],
+      ["Seu comentário", "Your comment", "Tu comentario"],
+      ["Como foi o atendimento, a região, a volta à noite?", "How was the service, the area, getting back at night?", "¿Cómo fue la atención, la zona, la vuelta de noche?"],
+      ["Quero que minha avaliação apareça para outras viajantes, depois de revisada pela equipe.", "I want my review to appear for other travelers after the team reviews it.", "Quiero que mi reseña aparezca para otras viajeras, después de ser revisada por el equipo."],
+      ["Não escreva nomes, telefones ou e-mails. Sem marcar, ela fica só neste navegador.", "Don't write names, phone numbers or emails. If unchecked, it stays only in this browser.", "No escribas nombres, teléfonos ni correos. Sin marcar, queda solo en este navegador."],
+      ["Enviar avaliação", "Submit review", "Enviar reseña"],
+      ["O que o sistema entendeu", "What the system understood", "Lo que entendió el sistema"],
+      ["Envie sua avaliação para ver a análise.", "Submit your review to see the analysis.", "Envía tu reseña para ver el análisis."],
+      ["Suas avaliações", "Your reviews", "Tus reseñas"],
+      ["Nenhuma ainda.", "None yet.", "Ninguna todavía."],
+      ["Como analisamos", "How we analyze", "Cómo analizamos"],
+      ["Seus salvos", "Your saved items", "Tus guardados"],
+      ["Ficam salvos neste navegador.", "Saved in this browser.", "Se guardan en este navegador."],
+      ["O projeto", "The project", "El proyecto"],
+      ["O nome", "The name", "El nombre"],
+      ["O Okaí nasceu na disciplina de Extração e Análise de Dados para ajudar mulheres a planejar viagens sozinhas pelo Brasil com mais confiança.", "Okaí was born in the Data Extraction and Analysis course to help women plan solo trips across Brazil with more confidence.", "Okaí nació en la asignatura de Extracción y Análisis de Datos para ayudar a las mujeres a planear viajes en solitario por Brasil con más confianza."],
+      ["Em tupi antigo,", "In Old Tupi,", "En tupí antiguo,"],
+      ["quer dizer casa. Oka é o nosso compromisso com a sua proteção, e o Í é o convite para explorar o Brasil. Sua casa está onde você decidir estar.", "means home. Oka is our commitment to your protection, and the Í is the invitation to explore Brazil. Your home is wherever you decide to be.", "significa casa. Oka es nuestro compromiso con tu protección, y la Í es la invitación a explorar Brasil. Tu casa está donde decidas estar."],
+      ["Protótipo acadêmico. Hotéis com comentários e notas são fictícios, e os dados simulados estão identificados. Os resultados mostram a percepção presente nos comentários analisados, e não uma garantia de que um local seja seguro ou perigoso.", "Academic prototype. Hotels with comments and ratings are fictional, and simulated data is labeled. Results show the perception found in the analyzed comments, not a guarantee that a place is safe or dangerous.", "Prototipo académico. Los hoteles con comentarios y calificaciones son ficticios, y los datos simulados están identificados. Los resultados muestran la percepción presente en los comentarios analizados, y no una garantía de que un lugar sea seguro o peligroso."],
+      ["A onça anda sozinha, e ninguém duvida dela.", "The jaguar walks alone, and no one doubts her.", "La jaguar anda sola, y nadie duda de ella."],
+      ["Fale com a OkaIA", "Talk to OkaIA", "Habla con OkaIA"],
+      ["Assistente de IA do Okaí", "Okaí's AI assistant", "Asistente de IA de Okaí"],
+      ["Fechar a OkaIA", "Close OkaIA", "Cerrar OkaIA"],
+      ["Pergunte sobre viagens ou destinos", "Ask about trips or destinations", "Pregunta sobre viajes o destinos"],
+      ["Enviar", "Send", "Enviar"],
+      ["A OkaIA é uma IA e pode errar. Em perigo imediato, ligue 190.", "OkaIA is an AI and can make mistakes. In immediate danger, call 190.", "OkaIA es una IA y puede equivocarse. En peligro inmediato, llama al 190."],
+      ["Oi! Eu sou a OkaIA, a assistente de IA do Okaí. Posso ajudar com destinos, hospedagens e preparação da viagem. Sobre qual lugar você está pensando?", "Hi! I'm OkaIA, Okaí's AI assistant. I can help with destinations, stays and trip preparation. Which place are you thinking about?", "¡Hola! Soy OkaIA, la asistente de IA de Okaí. Puedo ayudarte con destinos, alojamientos y la preparación del viaje. ¿En qué lugar estás pensando?"]
+    ];
+
+    var mapa = {};
+    D.forEach(function (r) { mapa[r[0]] = { en: r[1], es: r[2] }; });
+    var lang = 'pt', usado = false, timer = null;
+    var infoT = new WeakMap(), infoA = new WeakMap(), ATTR = ['placeholder', 'aria-label', 'title'];
+
+    function traduzir(txt) {
+      if (lang === 'pt') return null;
+      var k = txt.trim(), m = mapa[k];
+      return m ? txt.replace(k, function () { return m[lang]; }) : null;
+    }
+    function texto(n) {
+      var v = n.nodeValue, rec = infoT.get(n), pt = (rec && v === rec.mostrado) ? rec.pt : v;
+      var t = traduzir(pt), novo = t === null ? pt : t;
+      if (novo !== v) n.nodeValue = novo;
+      if (t !== null) infoT.set(n, { pt: pt, mostrado: t }); else infoT.delete(n);
+    }
+    function atributos(el) {
+      var reg = infoA.get(el) || {};
+      ATTR.forEach(function (a) {
+        if (!el.hasAttribute(a)) return;
+        var v = el.getAttribute(a), rec = reg[a], pt = (rec && v === rec.mostrado) ? rec.pt : v;
+        var t = traduzir(pt), novo = t === null ? pt : t;
+        if (novo !== v) el.setAttribute(a, novo);
+        if (t !== null) reg[a] = { pt: pt, mostrado: t }; else delete reg[a];
+      });
+      infoA.set(el, reg);
+    }
+    function passar() {
+      var w = document.createTreeWalker(document.body, 5), n;
+      while ((n = w.nextNode())) {
+        if (n.nodeType === 3) { var p = n.parentNode.nodeName; if (p !== 'SCRIPT' && p !== 'STYLE') texto(n); }
+        else atributos(n);
+      }
+    }
+    new MutationObserver(function () {
+      if (lang === 'pt' && !usado) return;
+      clearTimeout(timer); timer = setTimeout(passar, 60);
+    }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTR });
+
+    /* OkaIA responde no idioma escolhido */
+    var f0 = window.fetch;
+    window.fetch = function (u, o) {
+      if (lang !== 'pt' && typeof u === 'string' && u.indexOf('api/okaia') >= 0 && o && o.body) {
+        try {
+          var b = JSON.parse(o.body);
+          b.contexto = (b.contexto || '') + '\nIDIOMA: responda sempre em ' + (lang === 'en' ? 'inglês' : 'espanhol') + '.';
+          o = Object.assign({}, o, { body: JSON.stringify(b) });
+        } catch (e) { }
+      }
+      return f0.call(this, u, o);
+    };
+
+    /* botão Idioma, ao lado de Temas */
+    var NOMES = { pt: 'Português', en: 'English', es: 'Español' }, ROT = { pt: 'Idioma', en: 'Language', es: 'Idioma' };
+    var links = document.querySelector('.menu-links');
+    var caixa = document.createElement('div'); caixa.className = 'tema-caixa';
+    var botao = document.createElement('button'); botao.type = 'button'; botao.className = 'tema-botao';
+    botao.setAttribute('aria-haspopup', 'true'); botao.setAttribute('aria-expanded', 'false');
+    var lista = document.createElement('ul'); lista.className = 'tema-lista'; lista.hidden = true; lista.style.width = '180px';
+    Object.keys(NOMES).forEach(function (id) {
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button" role="menuitemradio" aria-checked="false" data-idioma="' + id + '">' + NOMES[id] + '</button>';
+      lista.appendChild(li);
+    });
+    caixa.appendChild(botao); caixa.appendChild(lista); links.appendChild(caixa);
+
+    function abrir(sim) { lista.hidden = !sim; botao.setAttribute('aria-expanded', sim ? 'true' : 'false'); }
+    botao.addEventListener('click', function (e) { e.stopPropagation(); abrir(lista.hidden); });
+    document.addEventListener('click', function (e) { if (!caixa.contains(e.target)) abrir(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') abrir(false); });
+
+    function aplicar(id, salvar) {
+      lang = id; if (id !== 'pt') usado = true;
+      document.documentElement.lang = id === 'pt' ? 'pt-BR' : id;
+      botao.textContent = ROT[id];
+      lista.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-checked', b.dataset.idioma === id ? 'true' : 'false'); });
+      passar();
+      if (salvar) { try { localStorage.setItem('okai-idioma', id); } catch (e) { } }
+    }
+    lista.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-idioma]'); if (!b) return;
+      aplicar(b.dataset.idioma, true); abrir(false);
+    });
+    var salvo = 'pt'; try { salvo = localStorage.getItem('okai-idioma') || 'pt'; } catch (e) { }
+    aplicar(NOMES[salvo] ? salvo : 'pt', false);
+  })();
     /* Fonte Coiny nos títulos escolhidos */
   (function () {
     var l = document.createElement('link');
