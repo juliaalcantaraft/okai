@@ -1889,9 +1889,4 @@
       return f1.call(this, u, o);
     };
   })();
-    /* Tela de início: foto do Rio de Janeiro trocada */
-  (function () {
-    var img = document.querySelector('#heroFotos a[href="#/cidade/3304557"] img');
-    if (img) img.src = 'assets/img/rio-inicio.jpg';
-  })();
 })();
