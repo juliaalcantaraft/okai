@@ -1908,4 +1908,29 @@
       }, 20);
     });
   })();
+    /* OkaIA: responde no idioma escolhido e fica mais rápida */
+  (function () {
+    var f2 = window.fetch;
+    window.fetch = function (u, o) {
+      if (typeof u === 'string' && u.indexOf('api/okaia') >= 0 && o && o.body) {
+        try {
+          var l = document.documentElement.lang, b = JSON.parse(o.body);
+          var nome = l === 'en' ? 'inglês' : l === 'es' ? 'espanhol' : 'português do Brasil';
+          if (Array.isArray(b.mensagens)) {
+            b.mensagens = b.mensagens.slice(-6);                                   // menos histórico, resposta mais rápida
+            while (b.mensagens.length && b.mensagens[0].papel !== 'usuaria') b.mensagens.shift();
+            for (var i = b.mensagens.length - 1; i >= 0; i--) {
+              if (b.mensagens[i].papel === 'usuaria') {
+                b.mensagens[i].texto += '\n\n[Instrução do sistema: responda inteiramente em ' + nome + ', mesmo que a pergunta ou o histórico estejam em outro idioma. Seja breve: no máximo 4 frases curtas.]';
+                break;
+              }
+            }
+          }
+          b.contexto = (b.contexto || '') + '\nIDIOMA DA RESPOSTA: ' + nome + '.';
+          o = Object.assign({}, o, { body: JSON.stringify(b) });
+        } catch (x) { }
+      }
+      return f2.call(this, u, o);
+    };
+  })();
 })();
