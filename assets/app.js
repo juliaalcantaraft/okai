@@ -1889,4 +1889,23 @@
       return f1.call(this, u, o);
     };
   })();
+    /* Botões "O que levar" e "Avaliar" da página da cidade levam a cidade já preenchida */
+  (function () {
+    var pendente = null;
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('.cidade-topo a[href="#antes"], .cidade-topo a[href="#/avaliacao"]');
+      var titulo = document.querySelector('.cidade-topo h2');
+      if (a && titulo) pendente = { hash: a.getAttribute('href'), nome: titulo.textContent.trim() };
+    }, true);
+
+    window.addEventListener('hashchange', function () {
+      if (!pendente || location.hash !== pendente.hash) { pendente = null; return; }
+      var p = pendente; pendente = null;
+      setTimeout(function () {   // roda depois da limpeza das abas
+        var campo = document.getElementById(p.hash === '#antes' ? 'planoDestino' : 'avalDestino');
+        if (campo) campo.value = p.nome;
+      }, 20);
+    });
+  })();
 })();
