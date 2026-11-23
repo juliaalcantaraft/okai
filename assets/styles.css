@@ -449,3 +449,9 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 .chave-relato{background:#EFA6B5;box-shadow:0 0 0 1px #7A2433}
 .chave-lista{background:#7A2433}
 
+/* "Voltar ao mapa": centralizado, sem sublinhado e com setinha */
+.voltar{align-self:center !important;display:inline-flex;align-items:center;gap:10px;text-decoration:none !important;padding:8px 18px}
+.voltar:hover{text-decoration:none !important}
+.voltar::before{content:"←";font-size:1.25em;line-height:1;transition:transform .25s ease}
+.voltar:hover::before{transform:translateX(-4px)}
+
