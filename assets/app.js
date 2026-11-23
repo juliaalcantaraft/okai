@@ -1933,4 +1933,25 @@
       return f2.call(this, u, o);
     };
   })();
+    /* Coiny em todos os títulos do site (página da cidade, cartões, salvos, resultados) */
+  (function () {
+    if (!document.querySelector('link[href*="family=Coiny"]')) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = 'https://fonts.googleapis.com/css2?family=Coiny&display=swap';
+      document.head.appendChild(l);
+    }
+    var st = document.createElement('style');
+    st.textContent =
+      'body h2,body h3,body h4,body .qp-passo legend,body .quiz-rotulo,body .resultado-sent,body .dif-nota,body .metrica strong{' +
+        'font-family:"Coiny",Georgia,serif !important;font-weight:400 !important;font-style:normal !important;' +
+        'text-transform:none !important;letter-spacing:0 !important;font-variation-settings:normal !important;font-synthesis:none}' +
+      'body .cidade-topo h2{font-size:clamp(34px,4.8vw,64px) !important;line-height:1.1 !important}' +
+      'body .vista-cidade .cartao h3,body #vistaSalvos .cartao h3,body .plano-res h3,body .como-corpo>h3{font-size:24px !important}' +
+      'body .perfil-res h3{font-size:clamp(26px,3vw,36px) !important}' +
+      'body .cartao h4,body .perfil-res h4,body .plano-res h4{font-size:18px !important}' +
+      'body .dif-nota{font-size:36px !important}' +
+      'body .metrica strong{font-size:32px !important}';
+    document.head.appendChild(st);
+  })();
 })();
