@@ -448,19 +448,3 @@ select,textarea,.plano-campos input,.aval-form input:not([type=radio]),.hoteis-f
 /* legenda */
 .chave-relato{background:#EFA6B5;box-shadow:0 0 0 1px #7A2433}
 .chave-lista{background:#7A2433}
-
-/* "Voltar ao mapa": alinhado à esquerda com a frase do menu, sem sublinhado, com setinha */
-.vista-cidade{position:relative}
-.voltar{
-  position:absolute !important;
-  top:16px;
-  left:clamp(16px,4vw,56px);          /* mesma margem da frase "Viaje sozinha, sinta-se em casa." */
-  align-self:auto !important;
-  display:inline-flex;align-items:center;gap:10px;
-  padding:8px 0 !important;
-  text-decoration:none !important;
-  z-index:2;
-}
-.voltar:hover{text-decoration:none !important}
-.voltar::before{content:"←";font-size:1.25em;line-height:1;transition:transform .25s ease}
-.voltar:hover::before{transform:translateX(-4px)}
