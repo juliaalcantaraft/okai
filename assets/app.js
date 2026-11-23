@@ -1954,4 +1954,29 @@
       'body .metrica strong{font-size:32px !important}';
     document.head.appendChild(st);
   })();
+    /* "Voltar ao mapa": sem sublinhado, com setinha, centralizado na frase do menu */
+  (function () {
+    var st = document.createElement('style');
+    st.textContent =
+      '.voltar{display:inline-flex;align-items:center;gap:10px;text-decoration:none !important}' +
+      '.voltar:hover{text-decoration:none !important}' +
+      '.voltar::before{content:"←";font-size:1.25em;line-height:1;transition:transform .25s ease}' +
+      '.voltar:hover::before{transform:translateX(-4px)}';
+    document.head.appendChild(st);
+
+    function alinhar() {
+      var v = document.querySelector('.voltar'), f = document.querySelector('.menu-frase');
+      if (!v || !f) return;
+      v.style.position = 'relative';
+      v.style.left = '0px';
+      var rf = f.getBoundingClientRect(), rv = v.getBoundingClientRect();
+      v.style.left = ((rf.left + rf.width / 2) - (rv.left + rv.width / 2)) + 'px';   // só desloca, sem mexer no resto
+    }
+
+    new MutationObserver(alinhar).observe(document.getElementById('vistaCidade'), { childList: true });
+    new MutationObserver(function () { setTimeout(alinhar, 80); }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
+    window.addEventListener('resize', alinhar);
+    window.addEventListener('hashchange', function () { setTimeout(alinhar, 80); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(alinhar);
+  })();
 })();
